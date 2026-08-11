@@ -26,6 +26,22 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/*
+ * Instalado na tela de início do iPhone ou no Dock do Mac, o widget é a página
+ * inteira — o fundo passa a ser nosso. Sem isto, `background=transparent` vira
+ * branco fixo do navegador, e `theme=auto` no escuro pintaria texto quase branco
+ * sobre ele. `Canvas` é a cor de fundo do sistema, então acompanha o tema.
+ *
+ * A regra não alcança o embed do Notion: um iframe roda em `display-mode:
+ * browser`, e é o que mantém uma URL só servindo as duas superfícies.
+ */
+@media (display-mode: standalone) {
+  html {
+    color-scheme: light dark;
+    background: Canvas;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    Widget
    --------------------------------------------------------------------------- */

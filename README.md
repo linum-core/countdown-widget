@@ -16,6 +16,7 @@ https://seu-dominio.com/w?target=2027-05-15T16:00:00&title=Casamento&layout=card
 - [Instalação](#instalação)
 - [Scripts](#scripts)
 - [Como usar no Notion](#como-usar-no-notion)
+- [Fora do Notion: tela de início e Dock](#fora-do-notion-tela-de-início-e-dock)
 - [Parâmetros](#parâmetros)
 - [Layouts](#layouts)
 - [Exemplos](#exemplos)
@@ -62,6 +63,24 @@ A aplicação sobe em `http://localhost:3000`. A homepage traz o gerador visual;
 3. No Notion, digite `/embed`, cole a URL e ajuste a altura do bloco.
 
 O widget nasce com fundo transparente, então ele assume o fundo da página do Notion — em tema claro e em tema escuro. O bloco não tem barra de rolagem: se o conteúdo não couber, aumente a altura do bloco ou use `size=small`.
+
+### Um embed, vários aparelhos
+
+Deixe `theme=auto` (o padrão) e **não** fixe cores: com cor explícita na URL, o tema deixa de ter efeito, por precedência. Feito isso, o mesmo bloco fica legível no computador e no celular.
+
+Um detalhe que confunde: dentro de um iframe de outra origem, `prefers-color-scheme` responde pelo **sistema operacional de quem lê**, nunca pelo tema da página que hospeda o embed — e não existe API do Notion que exponha esse tema. Com o Notion em "Usar configuração do sistema" os dois passam a andar juntos; com o Notion travado em claro e o sistema no escuro, o texto some. Nesse caso, fixe as cores de propósito.
+
+## Fora do Notion: tela de início e Dock
+
+A mesma URL do embed se instala como aplicativo. `/w` serve um manifest derivado dos próprios parâmetros, então o atalho reabre exatamente aquela contagem — e não a homepage do gerador.
+
+- **iPhone**: abra a URL no **Safari** (o Chrome do iOS não instala web apps) → Compartilhar → Adicionar à Tela de Início. Um toque abre em tela cheia, com os segundos correndo.
+- **Mac**: Safari → Arquivo → Adicionar ao Dock.
+- **Mac, sempre visível**: [Plash](https://apps.apple.com/app/plash/id1494023538) desenha a página viva no papel de parede. É o único caminho com contagem fiel na área de trabalho.
+
+Widget nativo de tela de início não entra nessa lista: o iOS proíbe webview em extensão de widget e limita a atualização a ~15 min, o que torna os segundos impossíveis ali.
+
+Instalado, o widget deixa de ser transparente e passa a pintar o próprio fundo seguindo o tema do sistema — no embed nada muda.
 
 ## Parâmetros
 
