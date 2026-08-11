@@ -57,6 +57,13 @@ function parseEnum<T extends string>(raw: string | null, allowed: readonly T[], 
   return allowed.includes(value) ? value : fallback;
 }
 
+/** Como `parseEnum`, mas sem default: valor ausente ou desconhecido vira `null`. */
+function parseOptionalEnum<T extends string>(raw: string | null, allowed: readonly T[]): T | null {
+  if (raw == null) return null;
+  const value = raw.trim().toLowerCase() as T;
+  return allowed.includes(value) ? value : null;
+}
+
 function parseText(raw: string | null, fallback: string): string {
   if (raw == null) return fallback;
   return raw.slice(0, TEXT_MAX_LENGTH);
@@ -115,6 +122,7 @@ export function parseConfig(source: ParamSource): WidgetConfig {
     theme: parseEnum(read('theme'), THEMES, DEFAULT_CONFIG.theme),
     size: parseEnum(read('size'), SIZES, DEFAULT_CONFIG.size),
     font: parseEnum(read('font'), FONTS, DEFAULT_CONFIG.font),
+    titleFont: parseOptionalEnum(read('titleFont'), FONTS),
     skin: parseEnum(read('skin'), SKINS, DEFAULT_CONFIG.skin),
     animation: parseEnum(read('animation'), ANIMATIONS, DEFAULT_CONFIG.animation),
 

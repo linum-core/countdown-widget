@@ -150,6 +150,24 @@ describe('Countdown', () => {
     expect(root.style.getPropertyValue('--cd-muted')).toBe('#ff0000');
   });
 
+  it('aplica a pilha de fontes escolhida no elemento raiz', () => {
+    const { container } = renderWidget({ font: 'playfair' });
+    const root = container.querySelector('.cd-root') as HTMLElement;
+
+    expect(root.style.fontFamily).toContain('--font-playfair');
+    expect(root).toHaveAttribute('data-title-font', 'playfair');
+    expect(root.style.getPropertyValue('--cd-title-font')).toBe('');
+  });
+
+  it('dá ao título uma fonte própria quando ela diverge do resto', () => {
+    const { container } = renderWidget({ font: 'playfair', titleFont: 'greatvibes' });
+    const root = container.querySelector('.cd-root') as HTMLElement;
+
+    expect(root.style.getPropertyValue('--cd-title-font')).toContain('--font-great-vibes');
+    expect(root.style.fontFamily).toContain('--font-playfair');
+    expect(root).toHaveAttribute('data-title-font', 'greatvibes');
+  });
+
   it('marca o tema escolhido no elemento raiz', () => {
     const { container } = renderWidget({ theme: 'dark' });
     expect(container.querySelector('.cd-root')).toHaveAttribute('data-theme', 'dark');

@@ -41,6 +41,7 @@ export function serializeConfig(config: WidgetConfig): string {
   if (config.theme !== DEFAULT_CONFIG.theme) set('theme', config.theme);
   if (config.size !== DEFAULT_CONFIG.size) set('size', config.size);
   if (config.font !== DEFAULT_CONFIG.font) set('font', config.font);
+  if (config.titleFont) set('titleFont', config.titleFont);
   if (config.skin !== DEFAULT_CONFIG.skin) set('skin', config.skin);
   if (config.animation !== DEFAULT_CONFIG.animation) set('animation', config.animation);
 

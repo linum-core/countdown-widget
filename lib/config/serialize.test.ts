@@ -30,6 +30,7 @@ describe('serializeConfig', () => {
       theme: 'dark',
       size: 'large',
       font: 'poppins',
+      titleFont: 'greatvibes',
       skin: 'glass',
       animation: 'flip',
       color: '#ffffff',

@@ -34,8 +34,16 @@ describe('parseConfig', () => {
     expect(parse('theme=dark').theme).toBe('dark');
     expect(parse('size=large').size).toBe('large');
     expect(parse('font=poppins').font).toBe('poppins');
+    expect(parse('font=playfair').font).toBe('playfair');
     expect(parse('skin=neon').skin).toBe('neon');
     expect(parse('animation=flip').animation).toBe('flip');
+  });
+
+  it('lê a fonte do título só quando informada', () => {
+    expect(parse('').titleFont).toBeNull();
+    expect(parse('titleFont=greatvibes').titleFont).toBe('greatvibes');
+    expect(parse('tf=playfair').titleFont).toBe('playfair');
+    expect(parse('titleFont=comic').titleFont).toBeNull();
   });
 
   it('normaliza a cor principal', () => {

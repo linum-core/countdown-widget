@@ -19,9 +19,10 @@ const PARAMETERS: readonly ParameterRow[] = [
   { name: 'size', values: 'small · medium · large', description: 'Escala tipográfica.' },
   {
     name: 'font',
-    values: 'inter · poppins · manrope · geist · system',
+    values: 'inter · poppins · manrope · geist · playfair · greatvibes · system',
     description: 'Família tipográfica.',
   },
+  { name: 'titleFont · tf', values: 'mesmos valores de font', description: 'Fonte só do título.' },
   { name: 'skin', values: 'flat · glass · neon', description: 'Acabamento das caixas.' },
   {
     name: 'animation',

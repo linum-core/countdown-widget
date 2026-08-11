@@ -10,7 +10,7 @@ export function MissingTarget() {
       <p className="font-medium" style={{ fontSize: 'var(--cd-title-size)' }}>
         Nenhuma data definida
       </p>
-      <p className="cd-label tracking-normal normal-case">
+      <p className="cd-subtitle">
         Adicione <code>?target=2027-05-15T16:00:00</code> à URL
       </p>
     </div>

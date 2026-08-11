@@ -9,7 +9,14 @@
 export type Layout = 'minimal' | 'horizontal' | 'cards' | 'circular';
 export type Theme = 'light' | 'dark' | 'auto';
 export type Size = 'small' | 'medium' | 'large';
-export type FontKey = 'inter' | 'poppins' | 'manrope' | 'geist' | 'system';
+export type FontKey =
+  | 'inter'
+  | 'poppins'
+  | 'manrope'
+  | 'geist'
+  | 'playfair'
+  | 'greatvibes'
+  | 'system';
 export type Skin = 'flat' | 'glass' | 'neon';
 export type Animation = 'fade' | 'slide' | 'flip' | 'none';
 
@@ -35,6 +42,8 @@ export interface WidgetConfig {
   theme: Theme;
   size: Size;
   font: FontKey;
+  /** Fonte só do título. `null` = mesma de `font`. */
+  titleFont: FontKey | null;
   skin: Skin;
   animation: Animation;
 

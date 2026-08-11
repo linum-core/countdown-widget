@@ -28,6 +28,8 @@ export const FONTS = [
   'poppins',
   'manrope',
   'geist',
+  'playfair',
+  'greatvibes',
   'system',
 ] as const satisfies readonly FontKey[];
 export const SKINS = ['flat', 'glass', 'neon'] as const satisfies readonly Skin[];
@@ -63,6 +65,7 @@ export const DEFAULT_CONFIG: WidgetConfig = {
   theme: 'auto',
   size: 'medium',
   font: 'inter',
+  titleFont: null,
   skin: 'flat',
   animation: 'slide',
 
@@ -93,6 +96,7 @@ export const PARAM_ALIASES = {
   theme: ['theme'],
   size: ['size'],
   font: ['font'],
+  titleFont: ['titleFont', 'titlefont', 'tf'],
   skin: ['skin', 'style'],
   animation: ['animation', 'anim'],
   color: ['color', 'colour'],

@@ -1,4 +1,4 @@
-import { Geist, Inter, Manrope, Poppins } from 'next/font/google';
+import { Geist, Great_Vibes, Inter, Manrope, Playfair_Display, Poppins } from 'next/font/google';
 
 /**
  * Fontes auto-hospedadas pelo `next/font`.
@@ -40,10 +40,28 @@ export const geist = Geist({
   variable: '--font-geist',
 });
 
+export const playfair = Playfair_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: false,
+  variable: '--font-playfair',
+});
+
+/** Cursiva de convite. Só tem o peso 400 — não existe versão negrito. */
+export const greatVibes = Great_Vibes({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
+  preload: false,
+  variable: '--font-great-vibes',
+});
+
 /** Variáveis de todas as fontes, aplicadas uma única vez no `<body>`. */
 export const fontVariables = [
   inter.variable,
   poppins.variable,
   manrope.variable,
   geist.variable,
+  playfair.variable,
+  greatVibes.variable,
 ].join(' ');

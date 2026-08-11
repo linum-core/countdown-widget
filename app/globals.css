@@ -74,6 +74,34 @@ body {
 /* Título do widget. */
 .cd-title {
   color: var(--cd-title-color);
+  font-family: var(--cd-title-font, inherit);
+  /* Precisa morar aqui, e não inline: estilo inline venceria o ajuste por fonte abaixo. */
+  font-size: var(--cd-title-size);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/*
+ * Cursivas têm altura-x muito menor que uma sans-serif: no mesmo corpo, o
+ * título sairia visivelmente menor que o resto. O ajuste é por fonte porque
+ * depende do desenho dela, não do tamanho escolhido pelo usuário.
+ */
+.cd-root[data-title-font='greatvibes'] .cd-title {
+  font-size: calc(var(--cd-title-size) * 1.7);
+  /* Great Vibes só tem o peso 400: pedir 500 faria o navegador engordar na marra. */
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+/*
+ * Subtítulo. Compartilha cor e corpo com os rótulos, mas é frase corrida — daí
+ * não herdar o caixa-alta nem o espaçamento largo de `.cd-label`.
+ */
+.cd-subtitle {
+  color: var(--cd-label-color);
+  font-size: calc(var(--cd-label-size) * 1.15);
+  line-height: 1.35;
 }
 
 /* Rótulo de cada unidade, e também o subtítulo. */

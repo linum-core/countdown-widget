@@ -93,7 +93,8 @@ Uma data **sem** offset é interpretada no fuso indicado por `timezone`; se `tim
 | `layout`     | —        | `minimal`, `horizontal`, `cards`, `circular`     | `minimal`     |
 | `theme`      | —        | `light`, `dark`, `auto`                          | `auto`        |
 | `size`       | —        | `small`, `medium`, `large`                       | `medium`      |
-| `font`       | —        | `inter`, `poppins`, `manrope`, `geist`, `system` | `inter`       |
+| `font`       | —        | `inter`, `poppins`, `manrope`, `geist`, `playfair`, `greatvibes`, `system` | `inter` |
+| `titleFont`  | `tf`     | mesmos valores de `font`                         | igual a `font` |
 | `skin`       | `style`  | `flat`, `glass`, `neon`                          | `flat`        |
 | `animation`  | `anim`   | `fade`, `slide`, `flip`, `none`                  | `slide`       |
 | `color`      | `colour` | hex (`ffffff` ou `#fff`)                         | cor do tema   |
@@ -102,6 +103,8 @@ Uma data **sem** offset é interpretada no fuso indicado por `timezone`; se `tim
 | `labelColor` | `lc`     | hex                                              | `color`       |
 | `background` | `bg`     | `transparent` ou hex                             | `transparent` |
 | `radius`     | —        | `0` a `48`                                       | `16`          |
+
+`playfair` (serifada de convite) e `greatvibes` (cursiva) existem para o caso de casamento; `greatvibes` só faz sentido no `titleFont`, porque nos dígitos fica ilegível. `titleFont` aceita as mesmas fontes e vale só para o título — o resto continua em `font`.
 
 `color` é a cor base de todo o texto. `numberColor` (dígitos e anéis do layout circular), `titleColor` (título) e `labelColor` (rótulos das unidades e subtítulo) sobrescrevem essa base e podem ser diferentes entre si. Quem não recebe cor própria segue `color`; sem `color`, segue o tema.
 

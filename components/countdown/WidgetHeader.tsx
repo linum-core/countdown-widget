@@ -18,12 +18,8 @@ export function WidgetHeader({ emoji, title, subtitle, inline = false }: WidgetH
             {emoji}
           </span>
         ) : null}
-        {title ? (
-          <span className="cd-title font-medium" style={{ fontSize: 'var(--cd-title-size)' }}>
-            {title}
-          </span>
-        ) : null}
-        {subtitle ? <span className="cd-label normal-case">{subtitle}</span> : null}
+        {title ? <span className="cd-title">{title}</span> : null}
+        {subtitle ? <span className="cd-subtitle">{subtitle}</span> : null}
       </div>
     );
   }
@@ -40,15 +36,8 @@ export function WidgetHeader({ emoji, title, subtitle, inline = false }: WidgetH
           {emoji}
         </span>
       ) : null}
-      {title ? (
-        <h1
-          className="cd-title font-medium tracking-tight"
-          style={{ fontSize: 'var(--cd-title-size)' }}
-        >
-          {title}
-        </h1>
-      ) : null}
-      {subtitle ? <p className="cd-label tracking-normal normal-case">{subtitle}</p> : null}
+      {title ? <h1 className="cd-title text-balance">{title}</h1> : null}
+      {subtitle ? <p className="cd-subtitle text-balance">{subtitle}</p> : null}
     </header>
   );
 }

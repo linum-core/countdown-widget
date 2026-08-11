@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { hexToRgbChannels, isDarkColor } from '@/lib/color';
+import { FONT_STACK } from '@/lib/theme/font-stack';
 import type { Size, WidgetConfig } from '@/types/widget';
 
 /**
@@ -51,6 +52,7 @@ export interface WidgetStyle extends CSSProperties {
   '--cd-fg'?: string;
   '--cd-muted'?: string;
   '--cd-number'?: string;
+  '--cd-title-font'?: string;
   '--cd-title-color'?: string;
   '--cd-label-color'?: string;
   '--cd-surface'?: string;
@@ -72,12 +74,18 @@ export interface WidgetStyle extends CSSProperties {
 export function buildWidgetStyle(config: WidgetConfig): WidgetStyle {
   const scale = SIZE_SCALE[config.size];
   const style: WidgetStyle = {
+    fontFamily: FONT_STACK[config.font],
     '--cd-radius': `${config.radius}px`,
     '--cd-value-size': scale.value,
     '--cd-label-size': scale.label,
     '--cd-title-size': scale.title,
     '--cd-gap': scale.gap,
   };
+
+  // A variável só existe quando o título realmente diverge; sem ela o CSS herda.
+  if (config.titleFont && config.titleFont !== config.font) {
+    style['--cd-title-font'] = FONT_STACK[config.titleFont];
+  }
 
   if (config.theme !== 'auto') {
     const palette = PALETTE[config.theme];

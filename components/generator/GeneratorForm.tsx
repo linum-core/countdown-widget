@@ -49,8 +49,15 @@ const FONT_LABELS = {
   poppins: 'Poppins',
   manrope: 'Manrope',
   geist: 'Geist',
+  playfair: 'Playfair Display (serifada)',
+  greatvibes: 'Great Vibes (cursiva)',
   system: 'Sistema',
 } as const;
+
+/** Valor sentinela do select de fonte do título, já que `null` não trafega em `<option>`. */
+const INHERIT_FONT = 'inherit';
+const TITLE_FONT_OPTIONS = [INHERIT_FONT, ...FONTS] as const;
+const TITLE_FONT_LABELS = { [INHERIT_FONT]: 'Mesma do widget', ...FONT_LABELS } as const;
 const UNIT_LABELS: Record<UnitKey, string> = {
   days: 'Dias',
   hours: 'Horas',
@@ -227,6 +234,20 @@ export function GeneratorForm({ siteUrl }: GeneratorFormProps) {
                   options={FONTS}
                   labels={FONT_LABELS}
                   onValueChange={(value) => update('font', value)}
+                />
+              )}
+            </Field>
+
+            <Field label="Fonte do título">
+              {(id) => (
+                <Select
+                  id={id}
+                  value={draft.titleFont ?? INHERIT_FONT}
+                  options={TITLE_FONT_OPTIONS}
+                  labels={TITLE_FONT_LABELS}
+                  onValueChange={(value) =>
+                    update('titleFont', value === INHERIT_FONT ? null : value)
+                  }
                 />
               )}
             </Field>

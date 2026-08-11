@@ -2,7 +2,6 @@
 
 import { useCountdown } from '@/hooks/useCountdown';
 import { activeUnits, buildAriaLabel } from '@/lib/format';
-import { FONT_STACK } from '@/lib/theme/font-stack';
 import { buildWidgetStyle } from '@/lib/theme/tokens';
 import { computeProgress } from '@/lib/time/diff';
 import type { WidgetConfig } from '@/types/widget';
@@ -39,11 +38,6 @@ export function Countdown({ config, now }: CountdownProps) {
   const units = activeUnits(config.units);
   const Layout = LAYOUTS[config.layout];
 
-  const style = {
-    ...buildWidgetStyle(config),
-    fontFamily: FONT_STACK[config.font],
-  };
-
   const progress =
     config.progress && config.fromMs != null && config.targetMs != null
       ? computeProgress(config.fromMs, config.targetMs, (now ?? Date.now)())
@@ -52,10 +46,11 @@ export function Countdown({ config, now }: CountdownProps) {
   return (
     <div
       className={`cd-root flex w-full flex-col items-center justify-center px-3 py-2`}
-      style={style}
+      style={buildWidgetStyle(config)}
       data-theme={config.theme}
       data-layout={config.layout}
       data-skin={config.skin}
+      data-title-font={config.titleFont ?? config.font}
     >
       {config.targetMs == null ? (
         <MissingTarget />
