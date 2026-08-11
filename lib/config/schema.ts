@@ -67,6 +67,9 @@ export const DEFAULT_CONFIG: WidgetConfig = {
   animation: 'slide',
 
   color: null,
+  numberColor: null,
+  titleColor: null,
+  labelColor: null,
   background: 'transparent',
   radius: 16,
 
@@ -93,6 +96,9 @@ export const PARAM_ALIASES = {
   skin: ['skin', 'style'],
   animation: ['animation', 'anim'],
   color: ['color', 'colour'],
+  numberColor: ['numberColor', 'numbercolor', 'nc'],
+  titleColor: ['titleColor', 'titlecolor', 'tc'],
+  labelColor: ['labelColor', 'labelcolor', 'lc'],
   background: ['background', 'bg'],
   radius: ['radius'],
   days: ['days'],

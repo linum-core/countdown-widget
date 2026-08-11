@@ -40,6 +40,15 @@ body {
   --cd-surface: 0 0 0;
   --cd-accent: 194 65 12;
 
+  /*
+   * Cores por papel. O fallback é `var(...)` e não um literal de propósito: a
+   * resolução acontece no uso, então trocar `--cd-fg` (tema, `auto`, `color=`)
+   * continua propagando para quem não recebeu uma cor própria.
+   */
+  --cd-number: var(--cd-fg);
+  --cd-title-color: var(--cd-fg);
+  --cd-label-color: var(--cd-muted);
+
   container-type: inline-size;
   color: var(--cd-fg);
   font-variant-numeric: tabular-nums;
@@ -62,9 +71,14 @@ body {
   }
 }
 
-/* Rótulo de cada unidade. */
+/* Título do widget. */
+.cd-title {
+  color: var(--cd-title-color);
+}
+
+/* Rótulo de cada unidade, e também o subtítulo. */
 .cd-label {
-  color: var(--cd-muted);
+  color: var(--cd-label-color);
   font-size: var(--cd-label-size);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -72,6 +86,7 @@ body {
 }
 
 .cd-value {
+  color: var(--cd-number);
   font-size: var(--cd-value-size);
   font-weight: 600;
   line-height: 1;

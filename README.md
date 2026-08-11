@@ -97,10 +97,15 @@ Uma data **sem** offset é interpretada no fuso indicado por `timezone`; se `tim
 | `skin`       | `style`  | `flat`, `glass`, `neon`                          | `flat`        |
 | `animation`  | `anim`   | `fade`, `slide`, `flip`, `none`                  | `slide`       |
 | `color`      | `colour` | hex (`ffffff` ou `#fff`)                         | cor do tema   |
+| `numberColor` | `nc`    | hex                                              | `color`       |
+| `titleColor` | `tc`     | hex                                              | `color`       |
+| `labelColor` | `lc`     | hex                                              | `color`       |
 | `background` | `bg`     | `transparent` ou hex                             | `transparent` |
 | `radius`     | —        | `0` a `48`                                       | `16`          |
 
-`theme=auto` segue a preferência do sistema de quem abrir, resolvida em CSS puro — sem JavaScript e sem flash na primeira pintura.
+`color` é a cor base de todo o texto. `numberColor` (dígitos e anéis do layout circular), `titleColor` (título) e `labelColor` (rótulos das unidades e subtítulo) sobrescrevem essa base e podem ser diferentes entre si. Quem não recebe cor própria segue `color`; sem `color`, segue o tema.
+
+`theme=auto` segue a preferência do sistema de quem abrir, resolvida em CSS puro — sem JavaScript e sem flash na primeira pintura. Atenção em embeds: é o sistema do leitor que decide, não o tema da página que hospeda o iframe. Um leitor com sistema escuro abrindo uma página clara vê texto claro sobre fundo claro. Em embed, prefira `theme=light`/`theme=dark` ou cores explícitas.
 
 ### Unidades e extras
 

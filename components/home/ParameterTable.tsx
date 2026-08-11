@@ -28,7 +28,10 @@ const PARAMETERS: readonly ParameterRow[] = [
     values: 'fade · slide · flip · none',
     description: 'Transição a cada número.',
   },
-  { name: 'color', values: 'ffffff', description: 'Cor do texto em hex.' },
+  { name: 'color', values: 'ffffff', description: 'Cor base do texto, em hex.' },
+  { name: 'numberColor · nc', values: 'ffffff', description: 'Cor só dos números.' },
+  { name: 'titleColor · tc', values: 'ffffff', description: 'Cor só do título.' },
+  { name: 'labelColor · lc', values: 'ffffff', description: 'Cor dos rótulos e do subtítulo.' },
   { name: 'background', values: 'transparent · 111111', description: 'Transparente por padrão.' },
   { name: 'radius', values: '0 a 48', description: 'Raio dos cantos, em px.' },
   {

@@ -45,6 +45,9 @@ export function serializeConfig(config: WidgetConfig): string {
   if (config.animation !== DEFAULT_CONFIG.animation) set('animation', config.animation);
 
   if (config.color) set('color', config.color);
+  if (config.numberColor) set('numberColor', config.numberColor);
+  if (config.titleColor) set('titleColor', config.titleColor);
+  if (config.labelColor) set('labelColor', config.labelColor);
   if (config.background !== DEFAULT_CONFIG.background) set('background', config.background);
   if (config.radius !== DEFAULT_CONFIG.radius) set('radius', String(config.radius));
 

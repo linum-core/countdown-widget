@@ -44,6 +44,21 @@ describe('parseConfig', () => {
     expect(parse('color=nope').color).toBeNull();
   });
 
+  it('normaliza as cores por papel de forma independente', () => {
+    const config = parse('numberColor=111111&titleColor=%23FFF&labelColor=6b6b6b');
+    expect(config.numberColor).toBe('#111111');
+    expect(config.titleColor).toBe('#ffffff');
+    expect(config.labelColor).toBe('#6b6b6b');
+    expect(config.color).toBeNull();
+  });
+
+  it('aceita os aliases curtos das cores por papel e descarta hex inválido', () => {
+    expect(parse('nc=000000').numberColor).toBe('#000000');
+    expect(parse('tc=000000').titleColor).toBe('#000000');
+    expect(parse('lc=000000').labelColor).toBe('#000000');
+    expect(parse('nc=lixo').numberColor).toBeNull();
+  });
+
   it('trata o fundo transparente como default e valida hex', () => {
     expect(parse('').background).toBe('transparent');
     expect(parse('background=transparent').background).toBe('transparent');

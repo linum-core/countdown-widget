@@ -38,8 +38,14 @@ export interface WidgetConfig {
   skin: Skin;
   animation: Animation;
 
-  /** Cor do texto, sempre normalizada para `#rrggbb`. */
+  /** Cor base de todo o texto, sempre normalizada para `#rrggbb`. `null` = segue o tema. */
   color: string | null;
+  /** Cor só dos dígitos. Sobrescreve `color`. */
+  numberColor: string | null;
+  /** Cor só do título. Sobrescreve `color`. */
+  titleColor: string | null;
+  /** Cor dos rótulos das unidades e do subtítulo. Sobrescreve `color`. */
+  labelColor: string | null;
   /** `'transparent'` ou `#rrggbb`. */
   background: string;
   /** Raio das caixas em px. */

@@ -117,6 +117,39 @@ describe('Countdown', () => {
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 
+  it('aplica a cor base em todo o texto', () => {
+    const { container } = renderWidget({ color: '#ff0000' });
+    const root = container.querySelector('.cd-root') as HTMLElement;
+
+    expect(root.style.getPropertyValue('--cd-fg')).toBe('#ff0000');
+    expect(root.style.getPropertyValue('--cd-muted')).toBe('#ff0000');
+    expect(root.style.getPropertyValue('--cd-number')).toBe('');
+  });
+
+  it('aplica cada cor por papel na sua própria variável', () => {
+    const { container } = renderWidget({
+      numberColor: '#ff0000',
+      titleColor: '#00ff00',
+      labelColor: '#0000ff',
+    });
+    const root = container.querySelector('.cd-root') as HTMLElement;
+
+    expect(root.style.getPropertyValue('--cd-number')).toBe('#ff0000');
+    expect(root.style.getPropertyValue('--cd-title-color')).toBe('#00ff00');
+    expect(root.style.getPropertyValue('--cd-label-color')).toBe('#0000ff');
+    // Sem `color`, as variáveis base ficam livres para o tema resolver.
+    expect(root.style.getPropertyValue('--cd-fg')).toBe('');
+  });
+
+  it('faz a cor dos números vencer a cor base sem contaminar os rótulos', () => {
+    const { container } = renderWidget({ color: '#ff0000', numberColor: '#00ff00' });
+    const root = container.querySelector('.cd-root') as HTMLElement;
+
+    expect(root.style.getPropertyValue('--cd-number')).toBe('#00ff00');
+    expect(root.style.getPropertyValue('--cd-label-color')).toBe('');
+    expect(root.style.getPropertyValue('--cd-muted')).toBe('#ff0000');
+  });
+
   it('marca o tema escolhido no elemento raiz', () => {
     const { container } = renderWidget({ theme: 'dark' });
     expect(container.querySelector('.cd-root')).toHaveAttribute('data-theme', 'dark');

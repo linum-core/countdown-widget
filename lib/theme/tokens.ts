@@ -34,16 +34,25 @@ const SIZE_SCALE: Record<Size, { value: string; label: string; title: string; ga
   },
 };
 
-/** Paletas base de cada tema. O tema `auto` é resolvido em CSS via media query. */
+/**
+ * Paletas base de cada tema. O tema `auto` é resolvido em CSS via media query.
+ *
+ * `surface` são canais RGB de uma *sobreposição* (`rgb(var(--cd-surface) / 0.05)`),
+ * não uma cor de fundo: no tema claro a caixa escurece o que está atrás, no
+ * escuro ela clareia. Por isso os valores são invertidos em relação ao `fg`.
+ */
 const PALETTE = {
-  light: { fg: '#111111', muted: '#6b6b6b', surface: '255 255 255' },
-  dark: { fg: '#f5f5f5', muted: '#a1a1a1', surface: '20 20 20' },
+  light: { fg: '#111111', muted: '#6b6b6b', surface: '0 0 0' },
+  dark: { fg: '#f5f5f5', muted: '#a1a1a1', surface: '255 255 255' },
 } as const;
 
 /** Variáveis próprias do widget; o prefixo evita colisão com qualquer host. */
 export interface WidgetStyle extends CSSProperties {
   '--cd-fg'?: string;
   '--cd-muted'?: string;
+  '--cd-number'?: string;
+  '--cd-title-color'?: string;
+  '--cd-label-color'?: string;
   '--cd-surface'?: string;
   '--cd-accent'?: string;
   '--cd-radius'?: string;
@@ -94,6 +103,15 @@ export function buildWidgetStyle(config: WidgetConfig): WidgetStyle {
     style['--cd-muted'] = config.color;
     style['--cd-accent'] = hexToRgbChannels(config.color) ?? undefined;
   }
+
+  // Cores por papel vencem a cor base: são o ajuste mais específico da URL.
+  if (config.numberColor) {
+    style['--cd-number'] = config.numberColor;
+    // O brilho do skin `neon` é do dígito, então acompanha a cor dele.
+    style['--cd-accent'] = hexToRgbChannels(config.numberColor) ?? style['--cd-accent'];
+  }
+  if (config.titleColor) style['--cd-title-color'] = config.titleColor;
+  if (config.labelColor) style['--cd-label-color'] = config.labelColor;
 
   return style;
 }

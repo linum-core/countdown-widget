@@ -3,7 +3,13 @@
 import { useMemo, useState } from 'react';
 import { LivePreview } from '@/components/generator/LivePreview';
 import { UrlOutput } from '@/components/generator/UrlOutput';
-import { ColorInput, Select, TextInput, Toggle } from '@/components/generator/fields/controls';
+import {
+  ColorInput,
+  OptionalColorInput,
+  Select,
+  TextInput,
+  Toggle,
+} from '@/components/generator/fields/controls';
 import { Field } from '@/components/ui/Field';
 import { contrastRatio } from '@/lib/color';
 import { createInitialDraft, draftToConfig, type ConfigDraft } from '@/lib/config/draft';
@@ -78,11 +84,17 @@ export function GeneratorForm({ siteUrl }: GeneratorFormProps) {
   const embedCode = useMemo(() => buildEmbedCode(url), [url]);
 
   // Aviso de contraste: só faz sentido quando ambas as cores são sólidas.
-  const contrast =
-    config.color && config.background !== 'transparent'
-      ? contrastRatio(config.color, config.background)
-      : null;
-  const lowContrast = contrast != null && contrast < 4.5;
+  const solidBackground: string | null =
+    config.background === 'transparent' ? null : config.background;
+  const colorHint = (value: string | null, inherited: string): string | undefined => {
+    if (value == null) return inherited;
+    if (solidBackground == null) return undefined;
+    // `null` aqui é hex incompleto sendo digitado — não há o que avisar ainda.
+    const contrast = contrastRatio(value, solidBackground);
+    return contrast != null && contrast < 4.5
+      ? 'Contraste abaixo de 4.5:1 — difícil de ler.'
+      : undefined;
+  };
 
   const timezones = useMemo(() => {
     const local = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -243,43 +255,58 @@ export function GeneratorForm({ siteUrl }: GeneratorFormProps) {
               )}
             </Field>
 
+            <Field label="Cor base do texto" hint={colorHint(draft.color, 'Seguindo o tema.')}>
+              {(id) => (
+                <OptionalColorInput
+                  id={id}
+                  value={draft.color}
+                  seed="#111111"
+                  onValueChange={(value) => update('color', value)}
+                  resetLabel="Voltar à cor do tema"
+                />
+              )}
+            </Field>
+
             <Field
-              label="Cor do texto"
-              hint={
-                lowContrast
-                  ? 'Contraste abaixo de 4.5:1 — difícil de ler.'
-                  : draft.color == null
-                    ? 'Seguindo o tema.'
-                    : undefined
-              }
+              label="Cor dos números"
+              hint={colorHint(draft.numberColor, 'Seguindo a cor base.')}
             >
-              {(id) =>
-                draft.color == null ? (
-                  <button
-                    id={id}
-                    type="button"
-                    onClick={() => update('color', '#111111')}
-                    className="border-rule text-ink-soft hover:border-ink/40 hover:text-ink w-full rounded-lg border bg-white/70 px-3 py-2 text-left text-sm transition-colors"
-                  >
-                    Definir cor personalizada
-                  </button>
-                ) : (
-                  <div className="flex flex-col gap-1.5">
-                    <ColorInput
-                      id={id}
-                      value={draft.color}
-                      onValueChange={(value) => update('color', value)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => update('color', null)}
-                      className="text-ink-faint hover:text-ink self-start text-xs underline underline-offset-4"
-                    >
-                      Voltar à cor do tema
-                    </button>
-                  </div>
-                )
-              }
+              {(id) => (
+                <OptionalColorInput
+                  id={id}
+                  value={draft.numberColor}
+                  seed={draft.color ?? '#111111'}
+                  onValueChange={(value) => update('numberColor', value)}
+                  resetLabel="Voltar à cor base"
+                />
+              )}
+            </Field>
+
+            <Field label="Cor do título" hint={colorHint(draft.titleColor, 'Seguindo a cor base.')}>
+              {(id) => (
+                <OptionalColorInput
+                  id={id}
+                  value={draft.titleColor}
+                  seed={draft.color ?? '#111111'}
+                  onValueChange={(value) => update('titleColor', value)}
+                  resetLabel="Voltar à cor base"
+                />
+              )}
+            </Field>
+
+            <Field
+              label="Cor dos rótulos e do subtítulo"
+              hint={colorHint(draft.labelColor, 'Seguindo a cor base.')}
+            >
+              {(id) => (
+                <OptionalColorInput
+                  id={id}
+                  value={draft.labelColor}
+                  seed={draft.color ?? '#6b6b6b'}
+                  onValueChange={(value) => update('labelColor', value)}
+                  resetLabel="Voltar à cor base"
+                />
+              )}
             </Field>
 
             <Field label={`Cantos arredondados — ${draft.radius}px`}>

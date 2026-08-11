@@ -44,7 +44,14 @@ export function CircularLayout({ config, parts, units }: LayoutProps) {
               style={{ width: 'calc(var(--cd-value-size) * 2.2)' }}
             >
               <div className="relative w-full">
-                <svg viewBox="0 0 100 100" className="w-full" aria-hidden="true" focusable="false">
+                {/* `color` local faz os dois `currentColor` do anel seguirem o dígito. */}
+                <svg
+                  viewBox="0 0 100 100"
+                  className="w-full"
+                  style={{ color: 'var(--cd-number)' }}
+                  aria-hidden="true"
+                  focusable="false"
+                >
                   <circle
                     cx="50"
                     cy="50"

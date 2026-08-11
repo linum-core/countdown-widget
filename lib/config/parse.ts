@@ -69,6 +69,11 @@ function parseNumber(raw: string | null, fallback: number, min: number, max: num
   return Math.min(max, Math.max(min, Math.round(value)));
 }
 
+/** Hex válido normalizado, ou `null` — que significa "segue o tema". */
+function parseOptionalColor(raw: string | null): string | null {
+  return raw ? normalizeHex(raw) : null;
+}
+
 /** `transparent` (default) ou um hex válido; entrada inválida vira transparente. */
 function parseBackground(raw: string | null): string {
   if (raw == null) return DEFAULT_CONFIG.background;
@@ -113,10 +118,10 @@ export function parseConfig(source: ParamSource): WidgetConfig {
     skin: parseEnum(read('skin'), SKINS, DEFAULT_CONFIG.skin),
     animation: parseEnum(read('animation'), ANIMATIONS, DEFAULT_CONFIG.animation),
 
-    color: ((): string | null => {
-      const raw = read('color');
-      return raw ? normalizeHex(raw) : null;
-    })(),
+    color: parseOptionalColor(read('color')),
+    numberColor: parseOptionalColor(read('numberColor')),
+    titleColor: parseOptionalColor(read('titleColor')),
+    labelColor: parseOptionalColor(read('labelColor')),
     background: parseBackground(read('background')),
     radius: parseNumber(read('radius'), DEFAULT_CONFIG.radius, RADIUS_MIN, RADIUS_MAX),
 

@@ -73,6 +73,57 @@ export function Toggle({ checked, onCheckedChange, label }: ToggleProps) {
   );
 }
 
+interface OptionalColorInputProps {
+  id: string;
+  /** `null` significa "sem cor própria": o widget segue o tema ou a cor base. */
+  value: string | null;
+  /** Cor sugerida ao ativar o campo. */
+  seed: string;
+  onValueChange: (value: string | null) => void;
+  /** Texto do botão que devolve o campo ao estado `null`. */
+  resetLabel: string;
+}
+
+/**
+ * Cor opcional: um botão enquanto não há valor, o seletor completo depois.
+ *
+ * A distinção entre "sem cor" e "cor igual à do tema" importa — a primeira
+ * acompanha o tema claro/escuro do leitor, a segunda o congela.
+ */
+export function OptionalColorInput({
+  id,
+  value,
+  seed,
+  onValueChange,
+  resetLabel,
+}: OptionalColorInputProps) {
+  if (value == null) {
+    return (
+      <button
+        id={id}
+        type="button"
+        onClick={() => onValueChange(seed)}
+        className="border-rule text-ink-soft hover:border-ink/40 hover:text-ink w-full rounded-lg border bg-white/70 px-3 py-2 text-left text-sm transition-colors"
+      >
+        Definir cor personalizada
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <ColorInput id={id} value={value} onValueChange={onValueChange} />
+      <button
+        type="button"
+        onClick={() => onValueChange(null)}
+        className="text-ink-faint hover:text-ink self-start text-xs underline underline-offset-4"
+      >
+        {resetLabel}
+      </button>
+    </div>
+  );
+}
+
 interface ColorInputProps {
   id: string;
   value: string;
