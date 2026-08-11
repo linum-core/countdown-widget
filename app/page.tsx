@@ -73,12 +73,22 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             <p className="text-ink-soft mt-3 text-sm leading-relaxed">
               Três passos, nenhuma conta.
             </p>
+            <p className="text-ink-faint mt-4 text-sm leading-relaxed">
+              O bloco <code className="bg-ink/[0.06] rounded px-1 py-0.5 font-mono text-xs">
+                /embed
+              </code>{' '}
+              do Notion recebe uma URL e não interpreta marcação: o código{' '}
+              <code className="bg-ink/[0.06] rounded px-1 py-0.5 font-mono text-xs">
+                &lt;iframe&gt;
+              </code>{' '}
+              é para outros sites, e um arquivo enviado ao Notion vira anexo, não embed.
+            </p>
           </div>
           <ol className="flex flex-col gap-6">
             {[
               'Ajuste a contagem no gerador acima até a prévia ficar do jeito que você quer.',
-              'Clique em “Copiar” na URL do widget.',
-              'No Notion, digite /embed, cole a URL e ajuste a altura do bloco.',
+              'Escolha o destino na saída do gerador e clique em “Copiar”.',
+              'No Notion, digite /embed e cole a URL — o bloco não aceita código HTML.',
             ].map((step, index) => (
               <li key={step} className="border-rule flex gap-4 border-t pt-5">
                 <span className="text-accent font-mono text-sm tabular-nums">

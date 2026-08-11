@@ -90,6 +90,20 @@ export function GeneratorForm({ siteUrl }: GeneratorFormProps) {
   const url = useMemo(() => buildWidgetUrl(config, siteUrl), [config, siteUrl]);
   const embedCode = useMemo(() => buildEmbedCode(url), [url]);
 
+  /*
+    Atalho do aviso da aba do Notion. Fixa o tema claro junto das cores porque
+    é ele quem decide a superfície dos cards, que as cores de texto não cobrem.
+  */
+  const pinDarkColors = (): void => {
+    setDraft((current) => ({
+      ...current,
+      theme: 'light',
+      numberColor: '#111111',
+      titleColor: '#111111',
+      labelColor: '#3a3a3a',
+    }));
+  };
+
   // Aviso de contraste: só faz sentido quando ambas as cores são sólidas.
   const solidBackground: string | null =
     config.background === 'transparent' ? null : config.background;
@@ -433,7 +447,12 @@ export function GeneratorForm({ siteUrl }: GeneratorFormProps) {
 
       <aside className="flex flex-col gap-8 lg:sticky lg:top-8">
         <LivePreview config={config} url={url} />
-        <UrlOutput url={url} embedCode={embedCode} />
+        <UrlOutput
+          url={url}
+          embedCode={embedCode}
+          config={config}
+          onPinDarkColors={pinDarkColors}
+        />
       </aside>
     </div>
   );

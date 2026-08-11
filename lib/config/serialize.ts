@@ -84,7 +84,51 @@ export function buildWidgetUrl(config: WidgetConfig, origin: string): string {
   return query ? `${base}?${query}` : base;
 }
 
-/** Snippet `<iframe>` pronto para colar no Notion via `/embed`. */
+/**
+ * Snippet `<iframe>` para sites que aceitam HTML.
+ *
+ * Não serve para o Notion: o bloco `/embed` recebe uma URL e não interpreta
+ * marcação — colar isto lá produz um parágrafo de texto.
+ */
 export function buildEmbedCode(url: string, height = 220): string {
   return `<iframe src="${url}" width="100%" height="${height}" frameborder="0" style="border:0;background:transparent" loading="lazy"></iframe>`;
+}
+
+const HTML_ESCAPES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+};
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"]/g, (char) => HTML_ESCAPES[char] ?? char);
+}
+
+/**
+ * Página autônoma com a contagem ocupando a janela inteira.
+ *
+ * Serve para abrir do disco, hospedar em outro lugar ou apontar um app de
+ * papel de parede. O Notion continua fora: arquivo enviado lá vira anexo com
+ * link de download, não embed.
+ */
+export function buildStandaloneHtml(url: string, title = 'Contagem regressiva'): string {
+  const safeTitle = escapeHtml(title);
+
+  return `<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>${safeTitle}</title>
+    <style>
+      html, body { height: 100%; margin: 0; background: transparent; }
+      iframe { display: block; width: 100%; height: 100%; border: 0; }
+    </style>
+  </head>
+  <body>
+    <iframe src="${escapeHtml(url)}" title="${safeTitle}"></iframe>
+  </body>
+</html>
+`;
 }

@@ -59,16 +59,26 @@ A aplicação sobe em `http://localhost:3000`. A homepage traz o gerador visual;
 ## Como usar no Notion
 
 1. Abra a homepage e ajuste a contagem no gerador até a prévia ficar do jeito desejado.
-2. Clique em **Copiar** na URL do widget.
+2. Na saída do gerador, escolha a aba **Notion** e clique em **Copiar**.
 3. No Notion, digite `/embed`, cole a URL e ajuste a altura do bloco.
+
+**Cole a URL, não o código.** O bloco `/embed` recebe um endereço e não interpreta marcação — um `<iframe>` colado ali vira um parágrafo de texto. O snippet HTML e o arquivo `.html` do gerador existem para outros sites: enviar um arquivo ao Notion produz um anexo com link de download, nunca um embed.
 
 O widget nasce com fundo transparente, então ele assume o fundo da página do Notion — em tema claro e em tema escuro. O bloco não tem barra de rolagem: se o conteúdo não couber, aumente a altura do bloco ou use `size=small`.
 
-### Um embed, vários aparelhos
+### Contraste: fixe as cores do embed
 
-Deixe `theme=auto` (o padrão) e **não** fixe cores: com cor explícita na URL, o tema deixa de ter efeito, por precedência. Feito isso, o mesmo bloco fica legível no computador e no celular.
+Dentro de um iframe de outra origem, `prefers-color-scheme` responde pelo **sistema operacional de quem lê**, nunca pelo tema da página que hospeda o embed — e não existe API do Notion que exponha esse tema. Com `theme=auto`, um leitor de celular no modo escuro sobre uma página clara recebe texto quase branco no branco: **o bloco carrega e parece vazio**.
 
-Um detalhe que confunde: dentro de um iframe de outra origem, `prefers-color-scheme` responde pelo **sistema operacional de quem lê**, nunca pelo tema da página que hospeda o embed — e não existe API do Notion que exponha esse tema. Com o Notion em "Usar configuração do sistema" os dois passam a andar juntos; com o Notion travado em claro e o sistema no escuro, o texto some. Nesse caso, fixe as cores de propósito.
+Por isso, no Notion, fixe `theme` e as cores em vez de confiar no automático:
+
+```
+&theme=light&numberColor=%23111111&titleColor=%23111111&labelColor=%233a3a3a
+```
+
+Cor explícita vence o tema, por precedência, então o embed fica legível em qualquer aparelho. O gerador avisa e oferece esse ajuste em um clique na aba **Notion**.
+
+O automático continua sendo a escolha certa para o widget **instalado** (tela de início, Dock): ali o fundo é da própria página, e ele acompanha o sistema junto com o texto.
 
 ## Fora do Notion: tela de início e Dock
 

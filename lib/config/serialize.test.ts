@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { WidgetConfig } from '@/types/widget';
 import { parseConfig } from './parse';
 import { DEFAULT_CONFIG } from './schema';
-import { buildEmbedCode, buildWidgetUrl, serializeConfig } from './serialize';
+import { buildEmbedCode, buildStandaloneHtml, buildWidgetUrl, serializeConfig } from './serialize';
 
 const roundTrip = (config: WidgetConfig): WidgetConfig =>
   parseConfig(new URLSearchParams(serializeConfig(config)));
@@ -95,5 +95,29 @@ describe('buildEmbedCode', () => {
     expect(code).toContain('src="https://exemplo.com/w?layout=cards"');
     expect(code).toContain('height="200"');
     expect(code).toContain('background:transparent');
+  });
+});
+
+describe('buildStandaloneHtml', () => {
+  it('gera um documento completo com a contagem ocupando a janela', () => {
+    const html = buildStandaloneHtml('https://exemplo.com/w?layout=cards', 'Casamento');
+
+    expect(html.startsWith('<!doctype html>')).toBe(true);
+    expect(html).toContain('src="https://exemplo.com/w?layout=cards"');
+    expect(html).toContain('<title>Casamento</title>');
+    expect(html).toContain('height: 100%');
+  });
+
+  it('escapa o título, que vem digitado pelo usuário', () => {
+    const html = buildStandaloneHtml('https://exemplo.com/w', 'A "grande" <festa>');
+
+    expect(html).toContain('<title>A &quot;grande&quot; &lt;festa&gt;</title>');
+    // Aspas cruas no atributo fechariam o `title` e injetariam marcação.
+    expect(html).not.toContain('title="A "grande"');
+  });
+
+  it('escapa o e comercial que separa os parâmetros', () => {
+    const html = buildStandaloneHtml('https://exemplo.com/w?layout=cards&size=large');
+    expect(html).toContain('layout=cards&amp;size=large');
   });
 });
