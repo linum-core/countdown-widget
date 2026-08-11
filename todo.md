@@ -1,0 +1,4 @@
+- [ ] Configurar repo git
+- [ ] Fazer deploy na vercel
+- [ ] Configurar no Notion
+- [ ] Configurar no celular

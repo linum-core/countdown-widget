@@ -1,0 +1,170 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Paleta editorial da homepage: monocromático quente + um único acento. */
+  --color-paper: #faf8f5;
+  --color-paper-deep: #f2eee8;
+  --color-ink: #16130f;
+  --color-ink-soft: #5c554c;
+  --color-ink-faint: #9a938a;
+  --color-rule: #e2dbd1;
+  --color-accent: #c2410c;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------------------------------------------------------------------------
+   Widget
+   --------------------------------------------------------------------------- */
+
+/*
+ * Defaults do widget. Correspondem ao tema claro; o bloco `auto` abaixo os
+ * troca conforme a preferência do sistema, sem JavaScript e sem flash.
+ */
+.cd-root {
+  --cd-fg: #111111;
+  --cd-muted: #6b6b6b;
+  --cd-surface: 0 0 0;
+  --cd-accent: 194 65 12;
+
+  container-type: inline-size;
+  color: var(--cd-fg);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+.cd-root[data-theme='auto'] {
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  /*
+   * `:not([style*='--cd-fg'])` preserva a precedência de uma cor explícita
+   * vinda da URL, que é aplicada inline no elemento raiz.
+   */
+  .cd-root[data-theme='auto']:not([style*='--cd-fg']) {
+    --cd-fg: #f5f5f5;
+    --cd-muted: #a1a1a1;
+    --cd-surface: 255 255 255;
+  }
+}
+
+/* Rótulo de cada unidade. */
+.cd-label {
+  color: var(--cd-muted);
+  font-size: var(--cd-label-size);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.cd-value {
+  font-size: var(--cd-value-size);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Caixa usada pelos layouts `cards` e `circular`. */
+.cd-surface {
+  background-color: rgb(var(--cd-surface) / 0.05);
+  border-radius: var(--cd-radius);
+}
+
+/*
+ * Skins. Aplicadas somente nas caixas internas — nunca no elemento raiz — para
+ * que `background=transparent` continue produzindo um embed sem moldura.
+ */
+.cd-glass {
+  background-color: rgb(var(--cd-surface) / 0.08);
+  border: 1px solid rgb(var(--cd-surface) / 0.14);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.cd-neon .cd-value {
+  text-shadow:
+    0 0 6px rgb(var(--cd-accent) / 0.55),
+    0 0 22px rgb(var(--cd-accent) / 0.35);
+}
+
+.cd-neon.cd-surface,
+.cd-neon .cd-surface {
+  border: 1px solid rgb(var(--cd-accent) / 0.4);
+  box-shadow: 0 0 18px rgb(var(--cd-accent) / 0.18);
+}
+
+/* ---------------------------------------------------------------------------
+   Animações de troca de valor
+   Só `transform` e `opacity`: ambas são compostas na GPU e não disparam layout.
+   --------------------------------------------------------------------------- */
+
+@keyframes cd-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cd-slide {
+  from {
+    opacity: 0;
+    transform: translateY(38%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cd-flip {
+  from {
+    opacity: 0;
+    transform: rotateX(-82deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotateX(0deg);
+  }
+}
+
+.cd-anim-fade {
+  animation: cd-fade 170ms ease-out;
+}
+
+.cd-anim-slide {
+  animation: cd-slide 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cd-anim-flip {
+  animation: cd-flip 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center top;
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cd-anim-fade,
+  .cd-anim-slide,
+  .cd-anim-flip {
+    animation: none;
+  }
+
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
