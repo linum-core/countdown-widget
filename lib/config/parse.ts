@@ -42,6 +42,19 @@ function readParam(source: ParamSource, name: ParamName): string | null {
   return null;
 }
 
+/**
+ * Diz se a URL traz alguma configuração conhecida.
+ *
+ * Serve para separar "link compartilhado" de "primeira visita": no primeiro
+ * caso o gerador abre com o que veio na URL, no segundo com o rascunho de
+ * demonstração. Parâmetro estranho — de campanha, por exemplo — não conta.
+ */
+export function hasAnyParam(source: ParamSource): boolean {
+  return (Object.keys(PARAM_ALIASES) as ParamName[]).some(
+    (name) => readParam(source, name) != null,
+  );
+}
+
 /** Aceita `true/1/yes/on/sim` e `false/0/no/off/nao`; qualquer outra coisa cai no default. */
 function parseBoolean(raw: string | null, fallback: boolean): boolean {
   if (raw == null) return fallback;

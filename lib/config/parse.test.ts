@@ -1,8 +1,31 @@
 import { describe, expect, it } from 'vitest';
-import { parseConfig } from './parse';
+import { hasAnyParam, parseConfig } from './parse';
 import { DEFAULT_CONFIG } from './schema';
 
 const parse = (query: string) => parseConfig(new URLSearchParams(query));
+
+describe('hasAnyParam', () => {
+  const has = (query: string) => hasAnyParam(new URLSearchParams(query));
+
+  it('reconhece um parâmetro pelo nome canônico e pelo alias curto', () => {
+    expect(has('target=2027-05-15T16:00:00')).toBe(true);
+    expect(has('t=2027-05-15T16:00:00')).toBe(true);
+    expect(has('bg=%23111111')).toBe(true);
+  });
+
+  it('ignora parâmetro que não é do widget', () => {
+    expect(has('utm_source=twitter&ref=email')).toBe(false);
+  });
+
+  it('trata URL vazia como primeira visita', () => {
+    expect(has('')).toBe(false);
+  });
+
+  it('lê também o formato de searchParams do Next', () => {
+    expect(hasAnyParam({ layout: 'cards' })).toBe(true);
+    expect(hasAnyParam({})).toBe(false);
+  });
+});
 
 describe('parseConfig', () => {
   it('devolve os defaults para uma URL vazia', () => {

@@ -66,6 +66,16 @@ A aplicação sobe em `http://localhost:3000`. A homepage traz o gerador visual;
 
 O widget nasce com fundo transparente, então ele assume o fundo da página do Notion — em tema claro e em tema escuro. O bloco não tem barra de rolagem: se o conteúdo não couber, aumente a altura do bloco ou use `size=small`.
 
+### Retomar a edição depois
+
+O formulário do gerador vive na URL da própria homepage: ela é reescrita a cada ajuste, e abri-la de volta traz tudo preenchido — inclusive para outra pessoa. É o **Link de edição** na saída do gerador.
+
+```
+https://seu-deploy.vercel.app/?target=2027-07-18T15:00:00&title=Casamento&layout=cards
+```
+
+Os mesmos parâmetros da tabela abaixo, na raiz em vez de em `/w`. A URL semeia o formulário uma vez, na abertura; a partir daí o caminho é só de ida, do formulário para a URL, então digitar nunca é atropelado por uma releitura.
+
 ### Contraste: fixe as cores do embed
 
 Dentro de um iframe de outra origem, `prefers-color-scheme` responde pelo **sistema operacional de quem lê**, nunca pelo tema da página que hospeda o embed — e não existe API do Notion que exponha esse tema. Com `theme=auto`, um leitor de celular no modo escuro sobre uma página clara recebe texto quase branco no branco: **o bloco carrega e parece vazio**.

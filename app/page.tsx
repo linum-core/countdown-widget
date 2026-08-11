@@ -1,33 +1,25 @@
-import { redirect } from 'next/navigation';
 import { GeneratorForm } from '@/components/generator/GeneratorForm';
 import { ParameterTable } from '@/components/home/ParameterTable';
 import { ExampleGallery } from '@/components/home/ExampleGallery';
-import type { RawSearchParams } from '@/lib/config/parse';
+import { configToDraft } from '@/lib/config/draft';
+import { hasAnyParam, parseConfig, type RawSearchParams } from '@/lib/config/parse';
 import { SITE_DESCRIPTION, SITE_NAME, getSiteUrl } from '@/lib/site';
 
 interface HomePageProps {
   searchParams: Promise<RawSearchParams>;
 }
 
-/** Reescreve `?target=...` recebido na raiz para a rota real do widget. */
-function widgetRedirect(params: RawSearchParams): string {
-  const query = new URLSearchParams();
-  for (const [key, value] of Object.entries(params)) {
-    if (value == null) continue;
-    query.set(key, Array.isArray(value) ? (value[0] ?? '') : value);
-  }
-  return `/w?${query.toString()}`;
-}
-
 export default async function HomePage({ searchParams }: HomePageProps) {
   const params = await searchParams;
-
-  // Links antigos apontando para a raiz continuam funcionando como widget.
-  if (params.target ?? params.date ?? params.t) {
-    redirect(widgetRedirect(params));
-  }
-
   const siteUrl = getSiteUrl();
+
+  /*
+    A raiz é também o link de edição: com configuração na URL, o formulário
+    abre preenchido e quem recebeu o link continua de onde o outro parou.
+    Sem nada na URL fica `null`, e o rascunho de demonstração nasce no cliente
+    — só lá existe a timezone de quem está montando a contagem.
+  */
+  const initialDraft = hasAnyParam(params) ? configToDraft(parseConfig(params)) : null;
 
   return (
     <main className="bg-paper text-ink min-h-dvh">
@@ -53,7 +45,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <h2 id="gerador" className="sr-only">
             Gerador de widget
           </h2>
-          <GeneratorForm siteUrl={siteUrl} />
+          <GeneratorForm siteUrl={siteUrl} initialDraft={initialDraft} />
         </section>
 
         <hr className="border-rule my-16" />

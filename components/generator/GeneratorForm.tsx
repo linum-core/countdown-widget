@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { LivePreview } from '@/components/generator/LivePreview';
 import { UrlOutput } from '@/components/generator/UrlOutput';
 import {
@@ -23,7 +23,7 @@ import {
   SKINS,
   THEMES,
 } from '@/lib/config/schema';
-import { buildEmbedCode, buildWidgetUrl } from '@/lib/config/serialize';
+import { buildEmbedCode, buildWidgetUrl, serializeConfig } from '@/lib/config/serialize';
 import { UNIT_ORDER } from '@/lib/time/diff';
 import type { UnitKey } from '@/types/widget';
 import { COMMON_TIMEZONES } from './timezones';
@@ -68,7 +68,12 @@ const UNIT_LABELS: Record<UnitKey, string> = {
 interface GeneratorFormProps {
   /** Origem calculada no servidor; mantém a URL correta já no primeiro render. */
   siteUrl: string;
+  /** Configuração vinda da URL. `null` abre o rascunho de demonstração. */
+  initialDraft: ConfigDraft | null;
 }
+
+/** Espera entre a última tecla e a reescrita da URL. */
+const URL_SYNC_DELAY_MS = 350;
 
 /**
  * Gerador visual.
@@ -77,9 +82,11 @@ interface GeneratorFormProps {
  * a prévia, a URL e o snippet de embed. Nada é sincronizado manualmente entre
  * esses quatro, então eles não têm como divergir.
  */
-export function GeneratorForm({ siteUrl }: GeneratorFormProps) {
-  const [draft, setDraft] = useState<ConfigDraft>(() =>
-    createInitialDraft(new Date(), Intl.DateTimeFormat().resolvedOptions().timeZone ?? null),
+export function GeneratorForm({ siteUrl, initialDraft }: GeneratorFormProps) {
+  const [draft, setDraft] = useState<ConfigDraft>(
+    () =>
+      initialDraft ??
+      createInitialDraft(new Date(), Intl.DateTimeFormat().resolvedOptions().timeZone ?? null),
   );
 
   const update = <K extends keyof ConfigDraft>(key: K, value: ConfigDraft[K]): void => {
@@ -89,6 +96,33 @@ export function GeneratorForm({ siteUrl }: GeneratorFormProps) {
   const config = useMemo(() => draftToConfig(draft), [draft]);
   const url = useMemo(() => buildWidgetUrl(config, siteUrl), [config, siteUrl]);
   const embedCode = useMemo(() => buildEmbedCode(url), [url]);
+
+  const query = useMemo(() => serializeConfig(config), [config]);
+  const editUrl = query ? `${siteUrl}/?${query}` : siteUrl;
+
+  /*
+    A URL da barra de endereço acompanha o formulário, então recarregar a página
+    ou mandar o endereço para alguém não perde o que foi montado.
+
+    `history.replaceState` em vez de `router.replace`: o segundo re-renderizaria
+    o Server Component a cada tecla. E `replace`, não `push`, para não encher o
+    histórico — o botão voltar deve sair do gerador, não desfazer digitação.
+  */
+  const synced = useRef(false);
+
+  useEffect(() => {
+    if (!synced.current) {
+      // O primeiro render já reflete a URL: reescrever aqui só a normalizaria.
+      synced.current = true;
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      window.history.replaceState(null, '', query ? `${location.pathname}?${query}` : location.pathname);
+    }, URL_SYNC_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [query]);
 
   /*
     Atalho do aviso da aba do Notion. Fixa o tema claro junto das cores porque
@@ -450,6 +484,7 @@ export function GeneratorForm({ siteUrl }: GeneratorFormProps) {
         <UrlOutput
           url={url}
           embedCode={embedCode}
+          editUrl={editUrl}
           config={config}
           onPinDarkColors={pinDarkColors}
         />

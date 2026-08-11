@@ -9,6 +9,8 @@ import type { WidgetConfig } from '@/types/widget';
 interface UrlOutputProps {
   url: string;
   embedCode: string;
+  /** Endereço que devolve o formulário preenchido, para continuar ou compartilhar. */
+  editUrl: string;
   config: WidgetConfig;
   /** Grava tema claro e cores escuras no rascunho, a partir do aviso do Notion. */
   onPinDarkColors: () => void;
@@ -93,7 +95,7 @@ function slugify(title: string): string {
  * literal, erro fácil de cometer quando a tela oferece os dois lado a lado sem
  * dizer onde cada um serve.
  */
-export function UrlOutput({ url, embedCode, config, onPinDarkColors }: UrlOutputProps) {
+export function UrlOutput({ url, embedCode, editUrl, config, onPinDarkColors }: UrlOutputProps) {
   const [destination, setDestination] = useState<Destination>('notion');
 
   /*
@@ -185,6 +187,17 @@ export function UrlOutput({ url, embedCode, config, onPinDarkColors }: UrlOutput
             Baixar .html
           </Button>
         ) : null}
+      </div>
+
+      {/*
+        Fora das abas de propósito: as três publicam a contagem, esta devolve o
+        formulário. Confundir as duas coisas colocaria HTML dentro do Notion.
+      */}
+      <div className="border-rule flex flex-col gap-2 border-t pt-5">
+        <CopyRow label="Link de edição" value={editUrl} />
+        <p className="text-ink-faint text-sm leading-relaxed">
+          Abre este formulário preenchido — para retomar depois ou passar a alguém.
+        </p>
       </div>
     </div>
   );

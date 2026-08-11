@@ -137,6 +137,23 @@ body {
   letter-spacing: -0.02em;
 }
 
+/*
+ * Barra de progresso. O trilho nasce da cor do texto, e não de `--cd-surface`:
+ * aquela sobreposição foi calibrada para caixas grandes e, num traço de 5px,
+ * some — no tema escuro sobre página clara ela chega a ser branco sobre branco.
+ * Derivar do texto garante que, se o número é legível, o trilho também é.
+ * A primeira declaração é o fallback para navegador sem `color-mix`.
+ */
+.cd-progress {
+  background-color: rgb(var(--cd-surface) / 0.14);
+  background-color: color-mix(in srgb, currentColor 22%, transparent);
+}
+
+/* O preenchimento é um valor, então segue os dígitos, como o anel do circular. */
+.cd-progress-fill {
+  background-color: var(--cd-number);
+}
+
 /* Caixa usada pelos layouts `cards` e `circular`. */
 .cd-surface {
   background-color: rgb(var(--cd-surface) / 0.05);

@@ -15,16 +15,15 @@ export function ProgressBar({ value, label }: ProgressBarProps) {
       aria-valuemax={100}
       aria-valuenow={percent}
       aria-label={label}
-      className="w-full overflow-hidden rounded-full"
-      style={{ height: '0.35rem', backgroundColor: 'rgb(var(--cd-surface) / 0.14)' }}
+      className="cd-progress w-full overflow-hidden rounded-full"
+      style={{ height: '0.35rem' }}
       // A fração vem do relógio, que difere entre o render do servidor e o do navegador.
       suppressHydrationWarning
     >
       <div
-        className="h-full rounded-full"
+        className="cd-progress-fill h-full rounded-full"
         style={{
           width: `${percent}%`,
-          backgroundColor: 'currentColor',
           transition: 'width 600ms cubic-bezier(0.22, 1, 0.36, 1)',
         }}
         suppressHydrationWarning

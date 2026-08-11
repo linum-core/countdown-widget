@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Countdown } from '@/components/countdown/Countdown';
-import type { WidgetConfig } from '@/types/widget';
+import type { Theme, WidgetConfig } from '@/types/widget';
 
 type Backdrop = 'light' | 'dark';
 
@@ -20,8 +20,29 @@ interface LivePreviewProps {
  * para conferir o comportamento dentro do Notion, não para o uso cotidiano.
  */
 export function LivePreview({ config, url }: LivePreviewProps) {
-  const [backdrop, setBackdrop] = useState<Backdrop>('light');
+  /*
+    O fundo segue o tema escolhido: com fundo fixo em claro, escolher o tema
+    escuro pintava texto claro sobre branco e parecia que o seletor não tinha
+    funcionado.
+
+    O clique no botão continua valendo, mas dura só até a próxima troca de tema
+    — inclusive na volta a um tema já visitado. Sobreviver a ela ressuscitaria a
+    combinação ilegível muito depois do clique, sem ninguém relacionar as duas
+    coisas. O reset acontece no render, e não num efeito, para o fundo nunca
+    aparecer um quadro atrasado em relação ao tema.
+  */
+  const [override, setOverride] = useState<Backdrop | null>(null);
+  const [lastTheme, setLastTheme] = useState<Theme>(config.theme);
   const [showIframe, setShowIframe] = useState(false);
+
+  if (lastTheme !== config.theme) {
+    setLastTheme(config.theme);
+    setOverride(null);
+  }
+
+  // `auto` na prévia não tem como seguir o sistema de quem vai ler o embed.
+  const followed: Backdrop = config.theme === 'auto' ? 'light' : config.theme;
+  const backdrop = override ?? followed;
 
   return (
     <div className="flex flex-col gap-3">
@@ -32,7 +53,7 @@ export function LivePreview({ config, url }: LivePreviewProps) {
             <button
               key={option}
               type="button"
-              onClick={() => setBackdrop(option)}
+              onClick={() => setOverride(option)}
               aria-pressed={backdrop === option}
               className={[
                 'rounded-full px-3 py-1 text-xs font-medium transition-colors',

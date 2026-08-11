@@ -7,6 +7,7 @@ import { UrlOutput } from './UrlOutput';
 
 const URL_WIDGET = 'https://exemplo.com/w?layout=cards';
 const EMBED_CODE = '<iframe src="https://exemplo.com/w?layout=cards"></iframe>';
+const URL_EDICAO = 'https://exemplo.com/?layout=cards';
 
 function renderOutput(overrides: Partial<WidgetConfig> = {}, onPinDarkColors = vi.fn()) {
   const config: WidgetConfig = { ...DEFAULT_CONFIG, title: 'Casamento', ...overrides };
@@ -14,6 +15,7 @@ function renderOutput(overrides: Partial<WidgetConfig> = {}, onPinDarkColors = v
     <UrlOutput
       url={URL_WIDGET}
       embedCode={EMBED_CODE}
+      editUrl={URL_EDICAO}
       config={config}
       onPinDarkColors={onPinDarkColors}
     />,
@@ -68,6 +70,16 @@ describe('UrlOutput', () => {
     await userEvent.click(screen.getByRole('tab', { name: 'iPhone e Mac' }));
 
     expect(screen.queryByRole('button', { name: 'Fixar cores escuras' })).not.toBeInTheDocument();
+  });
+
+  it('oferece o link de edição fora das abas, em qualquer uma delas', async () => {
+    renderOutput();
+
+    expect(screen.getByText(URL_EDICAO)).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('tab', { name: 'Outros sites' }));
+    // Publicar e retomar a edição são coisas diferentes: o link não muda de aba.
+    expect(screen.getByText(URL_EDICAO)).toBeInTheDocument();
   });
 
   it('delega a correção de contraste ao formulário', async () => {
