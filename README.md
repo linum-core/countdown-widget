@@ -98,7 +98,7 @@ A mesma URL do embed se instala como aplicativo. `/w` serve um manifest derivado
 - **Mac**: Safari → Arquivo → Adicionar ao Dock.
 - **Mac, sempre visível**: [Plash](https://apps.apple.com/app/plash/id1494023538) desenha a página viva no papel de parede. É o único caminho com contagem fiel na área de trabalho.
 
-Widget nativo de tela de início não entra nessa lista: o iOS proíbe webview em extensão de widget e limita a atualização a ~15 min, o que torna os segundos impossíveis ali.
+Widget nativo de tela de início não entra nessa lista: o iOS proíbe webview em extensão de widget e limita a atualização a ~15 min, o que torna os segundos impossíveis ali. Para um widget de verdade — desenhado nativamente, com a data fixa no aparelho, no iPhone e no Android — veja [`widgets/`](widgets/README.md).
 
 Instalado, o widget deixa de ser transparente e passa a pintar o próprio fundo seguindo o tema do sistema — no embed nada muda.
 
