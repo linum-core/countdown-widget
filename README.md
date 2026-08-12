@@ -204,10 +204,15 @@ pnpm dlx vercel        # preview
 pnpm dlx vercel --prod # produção
 ```
 
-O `vercel.json` já define o framework, os comandos e o cache dos assets estáticos. Duas configurações importantes vivem em `next.config.ts`:
+O `vercel.json` já define o framework, os comandos e o cache dos assets estáticos.
 
-- **`X-Frame-Options` nunca é enviado.** Esse cabeçalho bloquearia o iframe do Notion.
-- **`Content-Security-Policy: frame-ancestors`** autoriza explicitamente os domínios do Notion.
+### Nenhum cabeçalho de enquadramento em `/w`
+
+`next.config.ts` não envia **nem `X-Frame-Options`, nem `frame-ancestors` no CSP**. Não é esquecimento — é o que faz o embed funcionar no aplicativo do Notion no iPhone.
+
+O `frame-ancestors` já esteve lá, listando os domínios do Notion e terminando em `*`. Mesmo assim o bloco aparecia vazio no aplicativo do iPhone, enquanto a mesma URL abria normalmente no Safari do mesmo aparelho. O motivo: `*` numa source-list de CSP casa apenas com esquemas de rede (http/https/ws/wss), nunca com a origem `null` que um WKWebView — ou qualquer iframe com atributo `sandbox` — apresenta. Nenhuma source-list consegue nomear essa origem, então a única forma de permitir é não mandar a diretiva.
+
+Se você for endurecer os cabeçalhos, deixe essa rota de fora. O custo de segurança é nulo: `/w` é público, somente leitura, sem autenticação, sem cookie e sem ação destrutiva — não há o que sequestrar com clickjacking.
 
 Se você usar um domínio próprio, defina `NEXT_PUBLIC_SITE_URL` para que as URLs geradas na homepage e os metadados apontem para ele.
 
