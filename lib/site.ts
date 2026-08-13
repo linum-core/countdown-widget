@@ -12,4 +12,4 @@ export function getSiteUrl(): string {
 
 export const SITE_NAME = 'Countdown Widget';
 export const SITE_DESCRIPTION =
-  'Contagem regressiva minimalista, configurável por URL e pronta para embutir no Notion. Sem conta, sem rastreio, fundo transparente.';
+  'Contagem regressiva minimalista, configurável por URL e pronta para embutir no Notion. Sem conta, fundo transparente.';

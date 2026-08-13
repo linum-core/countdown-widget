@@ -22,6 +22,7 @@ https://seu-dominio.com/w?target=2027-05-15T16:00:00&title=Casamento&layout=card
 - [Exemplos](#exemplos)
 - [Deploy na Vercel](#deploy-na-vercel)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
+- [Anúncios](#anúncios)
 - [Arquitetura](#arquitetura)
 - [Testes](#testes)
 - [Screenshots](#screenshots)
@@ -127,21 +128,21 @@ Uma data **sem** offset é interpretada no fuso indicado por `timezone`; se `tim
 
 ### Aparência
 
-| Parâmetro    | Aliases  | Valores                                          | Padrão        |
-| ------------ | -------- | ------------------------------------------------ | ------------- |
-| `layout`     | —        | `minimal`, `horizontal`, `cards`, `circular`     | `minimal`     |
-| `theme`      | —        | `light`, `dark`, `auto`                          | `auto`        |
-| `size`       | —        | `small`, `medium`, `large`                       | `medium`      |
-| `font`       | —        | `inter`, `poppins`, `manrope`, `geist`, `playfair`, `greatvibes`, `system` | `inter` |
-| `titleFont`  | `tf`     | mesmos valores de `font`                         | igual a `font` |
-| `skin`       | `style`  | `flat`, `glass`, `neon`                          | `flat`        |
-| `animation`  | `anim`   | `fade`, `slide`, `flip`, `none`                  | `slide`       |
-| `color`      | `colour` | hex (`ffffff` ou `#fff`)                         | cor do tema   |
-| `numberColor` | `nc`    | hex                                              | `color`       |
-| `titleColor` | `tc`     | hex                                              | `color`       |
-| `labelColor` | `lc`     | hex                                              | `color`       |
-| `background` | `bg`     | `transparent` ou hex                             | `transparent` |
-| `radius`     | —        | `0` a `48`                                       | `16`          |
+| Parâmetro     | Aliases  | Valores                                                                    | Padrão         |
+| ------------- | -------- | -------------------------------------------------------------------------- | -------------- |
+| `layout`      | —        | `minimal`, `horizontal`, `cards`, `circular`                               | `minimal`      |
+| `theme`       | —        | `light`, `dark`, `auto`                                                    | `auto`         |
+| `size`        | —        | `small`, `medium`, `large`                                                 | `medium`       |
+| `font`        | —        | `inter`, `poppins`, `manrope`, `geist`, `playfair`, `greatvibes`, `system` | `inter`        |
+| `titleFont`   | `tf`     | mesmos valores de `font`                                                   | igual a `font` |
+| `skin`        | `style`  | `flat`, `glass`, `neon`                                                    | `flat`         |
+| `animation`   | `anim`   | `fade`, `slide`, `flip`, `none`                                            | `slide`        |
+| `color`       | `colour` | hex (`ffffff` ou `#fff`)                                                   | cor do tema    |
+| `numberColor` | `nc`     | hex                                                                        | `color`        |
+| `titleColor`  | `tc`     | hex                                                                        | `color`        |
+| `labelColor`  | `lc`     | hex                                                                        | `color`        |
+| `background`  | `bg`     | `transparent` ou hex                                                       | `transparent`  |
+| `radius`      | —        | `0` a `48`                                                                 | `16`           |
 
 `playfair` (serifada de convite) e `greatvibes` (cursiva) existem para o caso de casamento; `greatvibes` só faz sentido no `titleFont`, porque nos dígitos fica ilegível. `titleFont` aceita as mesmas fontes e vale só para o título — o resto continua em `font`.
 
@@ -220,11 +221,21 @@ Se você usar um domínio próprio, defina `NEXT_PUBLIC_SITE_URL` para que as UR
 
 Nenhuma é obrigatória. Veja `.env.example`.
 
-| Variável               | Para quê                                                         |
-| ---------------------- | ---------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL` | Origem pública usada em metadata, sitemap e nas URLs do gerador. |
+| Variável                              | Para quê                                                         |
+| ------------------------------------- | ---------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`                | Origem pública usada em metadata, sitemap e nas URLs do gerador. |
+| `NEXT_PUBLIC_ADSENSE_CLIENT`          | ID do publisher AdSense. Liga os anúncios da homepage.           |
+| `NEXT_PUBLIC_ADSENSE_SLOT_RAIL_LEFT`  | Unidade do trilho lateral esquerdo.                              |
+| `NEXT_PUBLIC_ADSENSE_SLOT_RAIL_RIGHT` | Unidade do trilho lateral direito.                               |
+| `NEXT_PUBLIC_ADSENSE_SLOT_FOOTER`     | Unidade do bloco antes do rodapé.                                |
 
-Sem ela, a Vercel preenche a origem automaticamente e o desenvolvimento local usa `http://localhost:3000`.
+Sem `NEXT_PUBLIC_SITE_URL`, a Vercel preenche a origem automaticamente e o desenvolvimento local usa `http://localhost:3000`.
+
+## Anúncios
+
+A homepage exibe Google AdSense; o widget em `/w` nunca exibe. Sem `NEXT_PUBLIC_ADSENSE_CLIENT` o site roda como antes — nenhum script externo, nenhum banner de cookies.
+
+Configuração, política de consentimento e passo a passo de aprovação em **[docs/ADS.md](docs/ADS.md)**. A página pública é [`/privacidade`](app/privacidade/page.tsx).
 
 ## Arquitetura
 
