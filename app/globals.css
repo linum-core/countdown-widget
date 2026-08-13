@@ -8,7 +8,12 @@
   --color-paper-deep: #f2eee8;
   --color-ink: #16130f;
   --color-ink-soft: #5c554c;
-  --color-ink-faint: #9a938a;
+  /*
+   * Passa o AA nos três fundos em que este tom aparece: 5.39:1 sobre `paper`,
+   * 4.95:1 sobre `paper-deep` e 4.76:1 sobre a caixa de código, que é `paper`
+   * escurecido em 6% de `ink` — o mais apertado dos três.
+   */
+  --color-ink-faint: #6e655a;
   --color-rule: #e2dbd1;
   --color-accent: #c2410c;
 }

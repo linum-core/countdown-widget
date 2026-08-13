@@ -1,10 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Countdown } from '@/components/countdown/Countdown';
 import type { Theme, WidgetConfig } from '@/types/widget';
 
 type Backdrop = 'light' | 'dark';
+
+/**
+ * Preferência de cor do sistema, observada.
+ *
+ * Começa em `false` e só muda depois de montar: no servidor não existe sistema
+ * a consultar, e divergir dele no primeiro render quebraria a hidratação.
+ */
+function useSystemPrefersDark(): boolean {
+  const [prefersDark, setPrefersDark] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-color-scheme: dark)');
+    setPrefersDark(query.matches);
+
+    const onChange = (event: MediaQueryListEvent): void => setPrefersDark(event.matches);
+    query.addEventListener('change', onChange);
+    return () => query.removeEventListener('change', onChange);
+  }, []);
+
+  return prefersDark;
+}
 
 interface LivePreviewProps {
   config: WidgetConfig;
@@ -41,12 +62,23 @@ export function LivePreview({ config, url }: LivePreviewProps) {
   }
 
   /*
-    `auto` na prévia não tem como seguir o sistema de quem vai ler o embed, e
-    `neutral` não pede fundo nenhum — foi feito justamente para os dois. Ambos
-    abrem no claro, e o botão ao lado é o convite para conferir o outro.
+    Com `auto`, o widget segue o sistema de quem está com a página aberta — e o
+    fundo da prévia precisa seguir junto. Fixá-lo em claro reproduzia aqui dentro
+    exatamente a falha que o gerador avisa: num sistema escuro, texto quase
+    branco sobre a caixa branca, e a prévia parecia vazia.
+
+    `neutral` não pede fundo nenhum, foi feito para os dois; abre no claro, e o
+    botão ao lado é o convite para conferir o outro.
   */
+  const systemPrefersDark = useSystemPrefersDark();
   const followed: Backdrop =
-    config.theme === 'auto' || config.theme === 'neutral' ? 'light' : config.theme;
+    config.theme === 'auto'
+      ? systemPrefersDark
+        ? 'dark'
+        : 'light'
+      : config.theme === 'neutral'
+        ? 'light'
+        : config.theme;
   const backdrop = override ?? followed;
 
   return (
