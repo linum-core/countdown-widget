@@ -9,7 +9,11 @@ const URL_WIDGET = 'https://exemplo.com/w?layout=cards';
 const EMBED_CODE = '<iframe src="https://exemplo.com/w?layout=cards"></iframe>';
 const URL_EDICAO = 'https://exemplo.com/?layout=cards';
 
-function renderOutput(overrides: Partial<WidgetConfig> = {}, onPinDarkColors = vi.fn()) {
+function renderOutput(
+  overrides: Partial<WidgetConfig> = {},
+  onPinDarkColors = vi.fn(),
+  onFixContrast = vi.fn(),
+) {
   const config: WidgetConfig = { ...DEFAULT_CONFIG, title: 'Casamento', ...overrides };
   render(
     <UrlOutput
@@ -18,10 +22,13 @@ function renderOutput(overrides: Partial<WidgetConfig> = {}, onPinDarkColors = v
       editUrl={URL_EDICAO}
       config={config}
       onPinDarkColors={onPinDarkColors}
+      onFixContrast={onFixContrast}
     />,
   );
-  return { onPinDarkColors };
+  return { onPinDarkColors, onFixContrast };
 }
+
+const AJUSTAR = 'Ajustar cores para claro e escuro';
 
 describe('UrlOutput', () => {
   it('abre no Notion mostrando a URL, nunca o código', () => {
@@ -88,5 +95,36 @@ describe('UrlOutput', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Fixar cores escuras' }));
 
     expect(onPinDarkColors).toHaveBeenCalledOnce();
+  });
+
+  it('avisa quando a cor fixa só serve a um dos fundos', () => {
+    renderOutput({ theme: 'dark', numberColor: '#852323' });
+    expect(screen.getByRole('button', { name: AJUSTAR })).toBeInTheDocument();
+  });
+
+  it('cala o aviso quando toda cor fixa lê nos dois', () => {
+    renderOutput({ theme: 'neutral', numberColor: '#469155' });
+    expect(screen.queryByRole('button', { name: AJUSTAR })).not.toBeInTheDocument();
+  });
+
+  it('cala o aviso com fundo sólido, onde o host não aparece', () => {
+    renderOutput({ theme: 'dark', numberColor: '#852323', background: '#191919' });
+    expect(screen.queryByRole('button', { name: AJUSTAR })).not.toBeInTheDocument();
+  });
+
+  it('não repete o aviso de contraste fora da aba do Notion', async () => {
+    renderOutput({ theme: 'dark', numberColor: '#852323' });
+
+    await userEvent.click(screen.getByRole('tab', { name: 'iPhone e Mac' }));
+
+    expect(screen.queryByRole('button', { name: AJUSTAR })).not.toBeInTheDocument();
+  });
+
+  it('delega o ajuste de cores ao formulário', async () => {
+    const { onFixContrast } = renderOutput({ theme: 'dark', numberColor: '#852323' });
+
+    await userEvent.click(screen.getByRole('button', { name: AJUSTAR }));
+
+    expect(onFixContrast).toHaveBeenCalledOnce();
   });
 });

@@ -76,19 +76,23 @@ https://seu-deploy.vercel.app/?target=2027-07-18T15:00:00&title=Casamento&layout
 
 Os mesmos parâmetros da tabela abaixo, na raiz em vez de em `/w`. A URL semeia o formulário uma vez, na abertura; a partir daí o caminho é só de ida, do formulário para a URL, então digitar nunca é atropelado por uma releitura.
 
-### Contraste: fixe as cores do embed
+### Contraste: use `theme=neutral` no embed
 
-Dentro de um iframe de outra origem, `prefers-color-scheme` responde pelo **sistema operacional de quem lê**, nunca pelo tema da página que hospeda o embed — e não existe API do Notion que exponha esse tema. Com `theme=auto`, um leitor de celular no modo escuro sobre uma página clara recebe texto quase branco no branco: **o bloco carrega e parece vazio**.
+O Notion não entrega o tema da página ao embed: não há parâmetro na URL do iframe, não há `postMessage` e o `color-scheme` da página que hospeda não atravessa a fronteira do iframe. Só sobra `prefers-color-scheme`, que **responde pelo sistema operacional de quem lê** — com uma exceção: no aplicativo de computador, que é Electron, o Notion chama `nativeTheme.themeSource` ao trocar de tema, e aí a media query passa a acompanhar o tema do próprio Notion. No navegador e no celular, não.
 
-Por isso, no Notion, fixe `theme` e as cores em vez de confiar no automático:
+Ou seja, `theme=auto` acerta no app de computador e é um chute nas outras superfícies. E cor fixa resolve o chute, mas só serve ao fundo para o qual foi escolhida: `#852323` tem 9.3:1 sobre branco e 1.9:1 sobre o `#191919` do Notion escuro.
+
+Para um embed que precisa servir aos dois, use **`theme=neutral`**:
 
 ```
-&theme=light&numberColor=%23111111&titleColor=%23111111&labelColor=%233a3a3a
+&theme=neutral
 ```
 
-Cor explícita vence o tema, por precedência, então o embed fica legível em qualquer aparelho. O gerador avisa e oferece esse ajuste em um clique na aba **Notion**.
+A paleta dele fica na faixa de luminância relativa ~0.20, onde o contraste contra branco e contra preto se iguala em torno de 4.2:1 — o teto matemático para uma cor só, e acima do mínimo de 3:1 que o WCAG pede para texto grande. As caixas dos layouts `cards` e `circular` derivam de `currentColor`, então acompanham.
 
-O automático continua sendo a escolha certa para o widget **instalado** (tela de início, Dock): ali o fundo é da própria página, e ele acompanha o sistema junto com o texto.
+Cores próprias continuam valendo por cima. O gerador confere cada uma contra os dois extremos e, quando alguma só serve a um lado, oferece **Ajustar cores para claro e escuro** na aba **Notion** — o ajuste preserva matiz e saturação e mexe só na claridade, então a cor escolhida continua sendo a mesma cor.
+
+`theme=auto` continua sendo a escolha certa para o widget **instalado** (tela de início, Dock): ali o fundo é da própria página, e ele acompanha o sistema junto com o texto.
 
 ## Fora do Notion: tela de início e Dock
 
@@ -130,7 +134,7 @@ Uma data **sem** offset é interpretada no fuso indicado por `timezone`; se `tim
 | Parâmetro    | Aliases  | Valores                                          | Padrão        |
 | ------------ | -------- | ------------------------------------------------ | ------------- |
 | `layout`     | —        | `minimal`, `horizontal`, `cards`, `circular`     | `minimal`     |
-| `theme`      | —        | `light`, `dark`, `auto`                          | `auto`        |
+| `theme`      | —        | `light`, `dark`, `auto`, `neutral`               | `auto`        |
 | `size`       | —        | `small`, `medium`, `large`                       | `medium`      |
 | `font`       | —        | `inter`, `poppins`, `manrope`, `geist`, `playfair`, `greatvibes`, `system` | `inter` |
 | `titleFont`  | `tf`     | mesmos valores de `font`                         | igual a `font` |
@@ -147,7 +151,9 @@ Uma data **sem** offset é interpretada no fuso indicado por `timezone`; se `tim
 
 `color` é a cor base de todo o texto. `numberColor` (dígitos e anéis do layout circular), `titleColor` (título) e `labelColor` (rótulos das unidades e subtítulo) sobrescrevem essa base e podem ser diferentes entre si. Quem não recebe cor própria segue `color`; sem `color`, segue o tema.
 
-`theme=auto` segue a preferência do sistema de quem abrir, resolvida em CSS puro — sem JavaScript e sem flash na primeira pintura. Atenção em embeds: é o sistema do leitor que decide, não o tema da página que hospeda o iframe. Um leitor com sistema escuro abrindo uma página clara vê texto claro sobre fundo claro. Em embed, prefira `theme=light`/`theme=dark` ou cores explícitas.
+`theme=auto` segue a preferência do sistema de quem abrir, resolvida em CSS puro — sem JavaScript e sem flash na primeira pintura. Atenção em embeds: é o sistema do leitor que decide, não o tema da página que hospeda o iframe. Um leitor com sistema escuro abrindo uma página clara vê texto claro sobre fundo claro.
+
+`theme=neutral` é a resposta para esse caso: em vez de apostar num fundo, usa tons de meio-termo que leem sobre branco e sobre preto ao mesmo tempo. É o tema recomendado para embed com `background=transparent`. Ver [Contraste: use `theme=neutral` no embed](#contraste-use-themeneutral-no-embed).
 
 ### Unidades e extras
 

@@ -11,7 +11,7 @@ import {
   Toggle,
 } from '@/components/generator/fields/controls';
 import { Field } from '@/components/ui/Field';
-import { contrastRatio } from '@/lib/color';
+import { contrastRatio, toDualToneSafe } from '@/lib/color';
 import { createInitialDraft, draftToConfig, type ConfigDraft } from '@/lib/config/draft';
 import {
   ANIMATIONS,
@@ -35,7 +35,12 @@ const LAYOUT_LABELS = {
   circular: 'Circular',
 } as const;
 
-const THEME_LABELS = { light: 'Claro', dark: 'Escuro', auto: 'Automático' } as const;
+const THEME_LABELS = {
+  light: 'Claro',
+  dark: 'Escuro',
+  auto: 'Automático',
+  neutral: 'Neutro (claro e escuro)',
+} as const;
 const SIZE_LABELS = { small: 'Pequeno', medium: 'Médio', large: 'Grande' } as const;
 const SKIN_LABELS = { flat: 'Plano', glass: 'Glass', neon: 'Neon' } as const;
 const ANIMATION_LABELS = {
@@ -136,6 +141,28 @@ export function GeneratorForm({ siteUrl, initialDraft }: GeneratorFormProps) {
       titleColor: '#111111',
       labelColor: '#3a3a3a',
     }));
+  };
+
+  /*
+    Outro atalho da aba do Notion, para o caso oposto: cores fixas que servem só
+    a um dos fundos. Reposiciona a claridade de cada uma na faixa que lê nos
+    dois e leva o tema junto, porque quem manda nas cores sem `color=` própria
+    (subtítulo, rótulos) é a paleta do tema.
+  */
+  const fixContrast = (): void => {
+    setDraft((current) => {
+      const safe = (value: string | null): string | null =>
+        value == null ? null : (toDualToneSafe(value) ?? value);
+
+      return {
+        ...current,
+        theme: 'neutral',
+        color: safe(current.color),
+        numberColor: safe(current.numberColor),
+        titleColor: safe(current.titleColor),
+        labelColor: safe(current.labelColor),
+      };
+    });
   };
 
   // Aviso de contraste: só faz sentido quando ambas as cores são sólidas.
@@ -487,6 +514,7 @@ export function GeneratorForm({ siteUrl, initialDraft }: GeneratorFormProps) {
           editUrl={editUrl}
           config={config}
           onPinDarkColors={pinDarkColors}
+          onFixContrast={fixContrast}
         />
       </aside>
     </div>

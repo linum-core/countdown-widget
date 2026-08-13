@@ -7,7 +7,12 @@
  */
 
 export type Layout = 'minimal' | 'horizontal' | 'cards' | 'circular';
-export type Theme = 'light' | 'dark' | 'auto';
+/**
+ * `neutral` não é um meio-termo estético: é a paleta cuja luminância cai na
+ * faixa em que o texto lê tanto sobre branco quanto sobre preto. Existe para o
+ * embed de fundo transparente, onde a cor atrás do widget é do host.
+ */
+export type Theme = 'light' | 'dark' | 'auto' | 'neutral';
 export type Size = 'small' | 'medium' | 'large';
 export type FontKey =
   | 'inter'

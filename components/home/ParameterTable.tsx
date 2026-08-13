@@ -15,7 +15,11 @@ const PARAMETERS: readonly ParameterRow[] = [
     values: 'minimal · horizontal · cards · circular',
     description: 'Forma do widget.',
   },
-  { name: 'theme', values: 'light · dark · auto', description: 'Auto segue o sistema.' },
+  {
+    name: 'theme',
+    values: 'light · dark · auto · neutral',
+    description: 'Auto segue o sistema; neutral lê no claro e no escuro.',
+  },
   { name: 'size', values: 'small · medium · large', description: 'Escala tipográfica.' },
   {
     name: 'font',

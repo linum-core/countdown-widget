@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import { Button } from '@/components/ui/Button';
+import { isDualToneSafe } from '@/lib/color';
 import { buildStandaloneHtml } from '@/lib/config/serialize';
 import type { WidgetConfig } from '@/types/widget';
 
@@ -14,6 +15,8 @@ interface UrlOutputProps {
   config: WidgetConfig;
   /** Grava tema claro e cores escuras no rascunho, a partir do aviso do Notion. */
   onPinDarkColors: () => void;
+  /** Reposiciona as cores fixas na faixa que lê no claro e no escuro. */
+  onFixContrast: () => void;
 }
 
 type Destination = 'notion' | 'device' | 'site';
@@ -95,7 +98,14 @@ function slugify(title: string): string {
  * literal, erro fácil de cometer quando a tela oferece os dois lado a lado sem
  * dizer onde cada um serve.
  */
-export function UrlOutput({ url, embedCode, editUrl, config, onPinDarkColors }: UrlOutputProps) {
+export function UrlOutput({
+  url,
+  embedCode,
+  editUrl,
+  config,
+  onPinDarkColors,
+  onFixContrast,
+}: UrlOutputProps) {
   const [destination, setDestination] = useState<Destination>('notion');
 
   /*
@@ -109,6 +119,24 @@ export function UrlOutput({ url, embedCode, editUrl, config, onPinDarkColors }: 
     !config.numberColor &&
     !config.titleColor &&
     !config.labelColor;
+
+  /*
+    O outro lado do mesmo problema: cor fixa resolve o `auto`, mas só serve ao
+    fundo para o qual foi escolhida. Com o widget transparente quem pinta atrás
+    é o Notion, que pode estar claro num aparelho e escuro noutro — daí conferir
+    cada cor contra os dois extremos, e não contra o fundo declarado.
+  */
+  const pinnedColors = [
+    config.color,
+    config.numberColor,
+    config.titleColor,
+    config.labelColor,
+  ].filter((value): value is string => value != null);
+
+  const hasOneSidedColor =
+    config.background === 'transparent' &&
+    pinnedColors.length > 0 &&
+    pinnedColors.some((value) => !isDualToneSafe(value));
 
   const download = (): void => {
     const html = buildStandaloneHtml(url, config.title || 'Contagem regressiva');
@@ -166,6 +194,18 @@ export function UrlOutput({ url, embedCode, editUrl, config, onPinDarkColors }: 
             </p>
             <Button variant="outline" className="self-start" onClick={onPinDarkColors}>
               Fixar cores escuras
+            </Button>
+          </div>
+        ) : null}
+
+        {destination === 'notion' && hasOneSidedColor ? (
+          <div className="border-accent/30 bg-accent/[0.06] flex flex-col gap-3 rounded-lg border p-3">
+            <p className="text-ink-soft text-sm leading-relaxed">
+              Alguma cor escolhida só lê sobre um dos fundos. Como o widget é transparente, quem
+              pinta atrás é o Notion — e ele pode estar claro no computador e escuro no celular.
+            </p>
+            <Button variant="outline" className="self-start" onClick={onFixContrast}>
+              Ajustar cores para claro e escuro
             </Button>
           </div>
         ) : null}

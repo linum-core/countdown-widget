@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { isDualToneSafe } from '@/lib/color';
 import { DEFAULT_CONFIG } from '@/lib/config/schema';
 import { MS_DAY, MS_HOUR, MS_MINUTE, MS_SECOND } from '@/lib/time/diff';
 import type { WidgetConfig } from '@/types/widget';
@@ -171,5 +172,15 @@ describe('Countdown', () => {
   it('marca o tema escolhido no elemento raiz', () => {
     const { container } = renderWidget({ theme: 'dark' });
     expect(container.querySelector('.cd-root')).toHaveAttribute('data-theme', 'dark');
+  });
+
+  it('pinta o tema neutro com tons que leem no claro e no escuro', () => {
+    const { container } = renderWidget({ theme: 'neutral' });
+    const root = container.querySelector('.cd-root') as HTMLElement;
+
+    expect(root).toHaveAttribute('data-theme', 'neutral');
+    // Inline, e não pela media query: o neutro não depende do sistema de ninguém.
+    expect(isDualToneSafe(root.style.getPropertyValue('--cd-fg'))).toBe(true);
+    expect(isDualToneSafe(root.style.getPropertyValue('--cd-muted'))).toBe(true);
   });
 });

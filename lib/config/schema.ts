@@ -21,7 +21,7 @@ export const LAYOUTS = [
   'cards',
   'circular',
 ] as const satisfies readonly Layout[];
-export const THEMES = ['light', 'dark', 'auto'] as const satisfies readonly Theme[];
+export const THEMES = ['light', 'dark', 'auto', 'neutral'] as const satisfies readonly Theme[];
 export const SIZES = ['small', 'medium', 'large'] as const satisfies readonly Size[];
 export const FONTS = [
   'inter',

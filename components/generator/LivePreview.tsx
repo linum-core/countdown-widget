@@ -40,8 +40,13 @@ export function LivePreview({ config, url }: LivePreviewProps) {
     setOverride(null);
   }
 
-  // `auto` na prévia não tem como seguir o sistema de quem vai ler o embed.
-  const followed: Backdrop = config.theme === 'auto' ? 'light' : config.theme;
+  /*
+    `auto` na prévia não tem como seguir o sistema de quem vai ler o embed, e
+    `neutral` não pede fundo nenhum — foi feito justamente para os dois. Ambos
+    abrem no claro, e o botão ao lado é o convite para conferir o outro.
+  */
+  const followed: Backdrop =
+    config.theme === 'auto' || config.theme === 'neutral' ? 'light' : config.theme;
   const backdrop = override ?? followed;
 
   return (
