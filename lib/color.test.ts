@@ -100,7 +100,7 @@ describe('toDualToneSafe', () => {
     const delta = max - min;
     const raw =
       max === r ? ((g - b) / delta) % 6 : max === g ? (b - r) / delta + 2 : (r - g) / delta + 4;
-    return ((raw * 60) % 360 + 360) % 360;
+    return (((raw * 60) % 360) + 360) % 360;
   };
 
   it('torna legível nos dois fundos uma cor que só servia a um', () => {

@@ -34,7 +34,12 @@ interface CountdownProps {
  * layout. Os layouts recebem dados prontos e cuidam apenas de apresentação.
  */
 export function Countdown({ config, now }: CountdownProps) {
-  const parts = useCountdown({ targetMs: config.targetMs, units: config.units, now });
+  const parts = useCountdown({
+    targetMs: config.targetMs,
+    units: config.units,
+    timezone: config.timezone,
+    now,
+  });
   const units = activeUnits(config.units);
   const Layout = LAYOUTS[config.layout];
 

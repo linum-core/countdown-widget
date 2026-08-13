@@ -80,15 +80,30 @@ describe('Countdown', () => {
   it('respeita as unidades desativadas e redistribui o tempo', () => {
     renderWidget({
       targetMs: NOW + 2 * MS_DAY + 3 * MS_HOUR,
-      units: { days: false, hours: true, minutes: true, seconds: true },
+      units: { months: false, days: false, hours: true, minutes: true, seconds: true },
     });
 
     expect(screen.getByText('51')).toBeInTheDocument();
     expect(screen.queryByText('Dias')).not.toBeInTheDocument();
   });
 
+  it('mostra meses de calendário quando a unidade está ligada', () => {
+    renderWidget({
+      // 01/01/2026 -> 18/07/2027: 18 meses cheios e 17 dias.
+      targetMs: Date.parse('2027-07-18T00:00:00.000Z'),
+      timezone: 'UTC',
+      units: { months: true, days: true, hours: true, minutes: true, seconds: true },
+    });
+
+    expect(screen.getByText('Meses')).toBeInTheDocument();
+    expect(screen.getByText('18')).toBeInTheDocument();
+    expect(screen.getByText('17')).toBeInTheDocument();
+  });
+
   it('usa os rótulos vindos da configuração', () => {
-    renderWidget({ labels: { days: 'Days', hours: 'Hrs', minutes: 'Min', seconds: 'Sec' } });
+    renderWidget({
+      labels: { months: 'Mos', days: 'Days', hours: 'Hrs', minutes: 'Min', seconds: 'Sec' },
+    });
 
     expect(screen.getByText('Days')).toBeInTheDocument();
     expect(screen.getByText('Hrs')).toBeInTheDocument();

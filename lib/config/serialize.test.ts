@@ -39,8 +39,8 @@ describe('serializeConfig', () => {
       labelColor: '#0000ff',
       background: '#111111',
       radius: 18,
-      units: { days: true, hours: true, minutes: true, seconds: false },
-      labels: { days: 'Days', hours: 'Hours', minutes: 'Min', seconds: 'Sec' },
+      units: { months: false, days: true, hours: true, minutes: true, seconds: false },
+      labels: { months: 'Months', days: 'Days', hours: 'Hours', minutes: 'Min', seconds: 'Sec' },
       endedText: 'Chegou!',
       icons: true,
       progress: true,
@@ -71,7 +71,7 @@ describe('serializeConfig', () => {
   it('faz round-trip dos flags booleanos desligados', () => {
     const config: WidgetConfig = {
       ...DEFAULT_CONFIG,
-      units: { days: false, hours: false, minutes: true, seconds: true },
+      units: { months: false, days: false, hours: false, minutes: true, seconds: true },
     };
 
     expect(roundTrip(config).units).toEqual(config.units);

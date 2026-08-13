@@ -1,3 +1,4 @@
+import { addMonths, wholeMonthsBetween } from '@/lib/time/timezone';
 import type { TimeParts, UnitFlags, UnitKey } from '@/types/widget';
 
 export const MS_SECOND = 1_000;
@@ -6,13 +7,28 @@ export const MS_HOUR = 60 * MS_MINUTE;
 export const MS_DAY = 24 * MS_HOUR;
 
 /** Ordem de exibição das unidades, da maior para a menor. */
-export const UNIT_ORDER: readonly UnitKey[] = ['days', 'hours', 'minutes', 'seconds'] as const;
+export const UNIT_ORDER: readonly UnitKey[] = [
+  'months',
+  'days',
+  'hours',
+  'minutes',
+  'seconds',
+] as const;
 
-const UNIT_MS: Record<UnitKey, number> = {
+/** Só as unidades de duração fixa entram aqui; mês depende do calendário. */
+const UNIT_MS: Record<Exclude<UnitKey, 'months'>, number> = {
   days: MS_DAY,
   hours: MS_HOUR,
   minutes: MS_MINUTE,
   seconds: MS_SECOND,
+};
+
+const ALL_UNITS: UnitFlags = {
+  months: false,
+  days: true,
+  hours: true,
+  minutes: true,
+  seconds: true,
 };
 
 /**
@@ -24,16 +40,22 @@ const UNIT_MS: Record<UnitKey, number> = {
  *
  * Unidades desativadas são redistribuídas para a maior unidade ativa seguinte.
  * Exemplo: com `days: false`, um alvo a 2 dias exibe `48` horas.
+ *
+ * Mês é a exceção: sai do calendário, e não de uma duração média. "Faltam 11
+ * meses e 5 dias" só é verdade se o mês contado for o mês real, com 28, 30 ou
+ * 31 dias conforme o caso. O resto do intervalo, depois de descontados os meses
+ * cheios, volta a ser aritmética de milissegundos como as demais unidades.
  */
 export function computeTimeParts(
   targetMs: number,
   nowMs: number,
-  units: UnitFlags = { days: true, hours: true, minutes: true, seconds: true },
+  units: UnitFlags = ALL_UNITS,
+  timezone: string | null = null,
 ): TimeParts {
   const remainingMs = Math.max(0, targetMs - nowMs);
   const ended = remainingMs === 0;
 
-  const parts: Record<UnitKey, number> = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  const parts: Record<UnitKey, number> = { months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
   const enabled = UNIT_ORDER.filter((unit) => units[unit]);
 
   // Sem nenhuma unidade ativa não há o que distribuir: tudo fica em zero.
@@ -42,7 +64,14 @@ export function computeTimeParts(
   }
 
   let rest = remainingMs;
+
+  if (units.months && !ended) {
+    parts.months = wholeMonthsBetween(nowMs, targetMs, timezone);
+    rest = targetMs - addMonths(nowMs, parts.months, timezone);
+  }
+
   for (const unit of enabled) {
+    if (unit === 'months') continue;
     const size = UNIT_MS[unit];
     const value = Math.floor(rest / size);
     parts[unit] = value;

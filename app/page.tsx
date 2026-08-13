@@ -66,10 +66,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               Três passos, nenhuma conta.
             </p>
             <p className="text-ink-faint mt-4 text-sm leading-relaxed">
-              O bloco <code className="bg-ink/[0.06] rounded px-1 py-0.5 font-mono text-xs">
-                /embed
-              </code>{' '}
-              do Notion recebe uma URL e não interpreta marcação: o código{' '}
+              O bloco{' '}
+              <code className="bg-ink/[0.06] rounded px-1 py-0.5 font-mono text-xs">/embed</code> do
+              Notion recebe uma URL e não interpreta marcação: o código{' '}
               <code className="bg-ink/[0.06] rounded px-1 py-0.5 font-mono text-xs">
                 &lt;iframe&gt;
               </code>{' '}

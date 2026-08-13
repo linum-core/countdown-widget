@@ -147,12 +147,14 @@ export function parseConfig(source: ParamSource): WidgetConfig {
     radius: parseNumber(read('radius'), DEFAULT_CONFIG.radius, RADIUS_MIN, RADIUS_MAX),
 
     units: {
+      months: parseBoolean(read('months'), DEFAULT_CONFIG.units.months),
       days: parseBoolean(read('days'), DEFAULT_CONFIG.units.days),
       hours: parseBoolean(read('hours'), DEFAULT_CONFIG.units.hours),
       minutes: parseBoolean(read('minutes'), DEFAULT_CONFIG.units.minutes),
       seconds: parseBoolean(read('seconds'), DEFAULT_CONFIG.units.seconds),
     },
     labels: {
+      months: parseText(read('labelMonths'), DEFAULT_CONFIG.labels.months),
       days: parseText(read('labelDays'), DEFAULT_CONFIG.labels.days),
       hours: parseText(read('labelHours'), DEFAULT_CONFIG.labels.hours),
       minutes: parseText(read('labelMinutes'), DEFAULT_CONFIG.labels.minutes),

@@ -64,6 +64,7 @@ const INHERIT_FONT = 'inherit';
 const TITLE_FONT_OPTIONS = [INHERIT_FONT, ...FONTS] as const;
 const TITLE_FONT_LABELS = { [INHERIT_FONT]: 'Mesma do widget', ...FONT_LABELS } as const;
 const UNIT_LABELS: Record<UnitKey, string> = {
+  months: 'Meses',
   days: 'Dias',
   hours: 'Horas',
   minutes: 'Minutos',
@@ -123,7 +124,11 @@ export function GeneratorForm({ siteUrl, initialDraft }: GeneratorFormProps) {
     }
 
     const timer = setTimeout(() => {
-      window.history.replaceState(null, '', query ? `${location.pathname}?${query}` : location.pathname);
+      window.history.replaceState(
+        null,
+        '',
+        query ? `${location.pathname}?${query}` : location.pathname,
+      );
     }, URL_SYNC_DELAY_MS);
 
     return () => clearTimeout(timer);

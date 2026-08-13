@@ -39,6 +39,7 @@ export const RADIUS_MIN = 0;
 export const RADIUS_MAX = 48;
 
 export const DEFAULT_LABELS: UnitLabels = {
+  months: 'Meses',
   days: 'Dias',
   hours: 'Horas',
   minutes: 'Minutos',
@@ -76,7 +77,12 @@ export const DEFAULT_CONFIG: WidgetConfig = {
   background: 'transparent',
   radius: 16,
 
-  units: { days: true, hours: true, minutes: true, seconds: true },
+  /*
+    `months` nasce desligado: ligá-lo por padrão mudaria a contagem de toda URL
+    já publicada por aí, que passaria a mostrar uma caixa a mais sem ninguém ter
+    pedido.
+  */
+  units: { months: false, days: true, hours: true, minutes: true, seconds: true },
   labels: DEFAULT_LABELS,
   endedText: DEFAULT_ENDED_TEXT,
 
@@ -105,10 +111,13 @@ export const PARAM_ALIASES = {
   labelColor: ['labelColor', 'labelcolor', 'lc'],
   background: ['background', 'bg'],
   radius: ['radius'],
+  months: ['months'],
   days: ['days'],
   hours: ['hours'],
   minutes: ['minutes'],
   seconds: ['seconds'],
+  // `lm` já é de `labelMinutes`, então o de meses fica `lmo`.
+  labelMonths: ['labelMonths', 'lmo'],
   labelDays: ['labelDays', 'ld'],
   labelHours: ['labelHours', 'lh'],
   labelMinutes: ['labelMinutes', 'lm'],

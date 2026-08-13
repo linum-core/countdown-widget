@@ -117,7 +117,7 @@ function rgbToHsl({ r, g, b }: Rgb): { h: number; s: number; l: number } {
   else if (max === green) h = (blue - red) / delta + 2;
   else h = (red - green) / delta + 4;
 
-  return { h: ((h * 60) % 360 + 360) % 360, s, l };
+  return { h: (((h * 60) % 360) + 360) % 360, s, l };
 }
 
 function hslToRgb(h: number, s: number, l: number): Rgb {

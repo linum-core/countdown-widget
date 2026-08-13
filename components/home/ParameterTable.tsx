@@ -40,12 +40,12 @@ const PARAMETERS: readonly ParameterRow[] = [
   { name: 'background', values: 'transparent · 111111', description: 'Transparente por padrão.' },
   { name: 'radius', values: '0 a 48', description: 'Raio dos cantos, em px.' },
   {
-    name: 'days · hours · minutes · seconds',
+    name: 'months · days · hours · minutes · seconds',
     values: 'true · false',
-    description: 'Liga cada unidade.',
+    description: 'Liga cada unidade. Meses vem desligado.',
   },
   {
-    name: 'labelDays · labelHours · labelMinutes · labelSeconds',
+    name: 'labelMonths · labelDays · labelHours · labelMinutes · labelSeconds',
     values: 'texto',
     description: 'Rótulo de cada unidade.',
   },

@@ -131,21 +131,21 @@ Uma data **sem** offset é interpretada no fuso indicado por `timezone`; se `tim
 
 ### Aparência
 
-| Parâmetro    | Aliases  | Valores                                          | Padrão        |
-| ------------ | -------- | ------------------------------------------------ | ------------- |
-| `layout`     | —        | `minimal`, `horizontal`, `cards`, `circular`     | `minimal`     |
-| `theme`      | —        | `light`, `dark`, `auto`, `neutral`               | `auto`        |
-| `size`       | —        | `small`, `medium`, `large`                       | `medium`      |
-| `font`       | —        | `inter`, `poppins`, `manrope`, `geist`, `playfair`, `greatvibes`, `system` | `inter` |
-| `titleFont`  | `tf`     | mesmos valores de `font`                         | igual a `font` |
-| `skin`       | `style`  | `flat`, `glass`, `neon`                          | `flat`        |
-| `animation`  | `anim`   | `fade`, `slide`, `flip`, `none`                  | `slide`       |
-| `color`      | `colour` | hex (`ffffff` ou `#fff`)                         | cor do tema   |
-| `numberColor` | `nc`    | hex                                              | `color`       |
-| `titleColor` | `tc`     | hex                                              | `color`       |
-| `labelColor` | `lc`     | hex                                              | `color`       |
-| `background` | `bg`     | `transparent` ou hex                             | `transparent` |
-| `radius`     | —        | `0` a `48`                                       | `16`          |
+| Parâmetro     | Aliases  | Valores                                                                    | Padrão         |
+| ------------- | -------- | -------------------------------------------------------------------------- | -------------- |
+| `layout`      | —        | `minimal`, `horizontal`, `cards`, `circular`                               | `minimal`      |
+| `theme`       | —        | `light`, `dark`, `auto`, `neutral`                                         | `auto`         |
+| `size`        | —        | `small`, `medium`, `large`                                                 | `medium`       |
+| `font`        | —        | `inter`, `poppins`, `manrope`, `geist`, `playfair`, `greatvibes`, `system` | `inter`        |
+| `titleFont`   | `tf`     | mesmos valores de `font`                                                   | igual a `font` |
+| `skin`        | `style`  | `flat`, `glass`, `neon`                                                    | `flat`         |
+| `animation`   | `anim`   | `fade`, `slide`, `flip`, `none`                                            | `slide`        |
+| `color`       | `colour` | hex (`ffffff` ou `#fff`)                                                   | cor do tema    |
+| `numberColor` | `nc`     | hex                                                                        | `color`        |
+| `titleColor`  | `tc`     | hex                                                                        | `color`        |
+| `labelColor`  | `lc`     | hex                                                                        | `color`        |
+| `background`  | `bg`     | `transparent` ou hex                                                       | `transparent`  |
+| `radius`      | —        | `0` a `48`                                                                 | `16`           |
 
 `playfair` (serifada de convite) e `greatvibes` (cursiva) existem para o caso de casamento; `greatvibes` só faz sentido no `titleFont`, porque nos dígitos fica ilegível. `titleFont` aceita as mesmas fontes e vale só para o título — o resto continua em `font`.
 
@@ -159,12 +159,20 @@ Uma data **sem** offset é interpretada no fuso indicado por `timezone`; se `tim
 
 | Parâmetro                                                 | Aliases                | Valores        | Padrão             |
 | --------------------------------------------------------- | ---------------------- | -------------- | ------------------ |
+| `months`                                                  | —                      | `true`/`false` | `false`            |
 | `days`, `hours`, `minutes`, `seconds`                     | —                      | `true`/`false` | `true`             |
+| `labelMonths`                                             | `lmo`                  | texto          | `Meses`            |
 | `labelDays`, `labelHours`, `labelMinutes`, `labelSeconds` | `ld`, `lh`, `lm`, `ls` | texto          | `Dias`, `Horas`, … |
 | `icons`                                                   | —                      | `true`/`false` | `false`            |
 | `progress`                                                | —                      | `true`/`false` | `false`            |
 
 Desligar uma unidade **redistribui** o tempo para a maior unidade ativa seguinte. Com `days=false`, um alvo a dois dias exibe `48` horas em vez de perder a informação.
+
+`months=true` conta **meses de calendário**, não blocos de 30 dias: de 1º de fevereiro a 1º de março é um mês, e de 1º de março a 1º de abril também, com três dias de diferença entre os dois intervalos. O dia é grampeado ao último do mês de destino, então 31 de janeiro mais um mês é 28 de fevereiro. Os dias que sobram depois dos meses cheios seguem para a caixa de `days`. Quem decide de qual calendário se trata é `timezone`.
+
+```
+?target=2027-07-18T15:00:00&tz=America/Sao_Paulo&months=true
+```
 
 Todo texto visível é parâmetro: para uma contagem em inglês, basta trocar os rótulos.
 

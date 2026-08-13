@@ -52,6 +52,9 @@ export function serializeConfig(config: WidgetConfig): string {
   if (config.background !== DEFAULT_CONFIG.background) set('background', config.background);
   if (config.radius !== DEFAULT_CONFIG.radius) set('radius', String(config.radius));
 
+  if (config.units.months !== DEFAULT_CONFIG.units.months) {
+    set('months', String(config.units.months));
+  }
   if (config.units.days !== DEFAULT_CONFIG.units.days) set('days', String(config.units.days));
   if (config.units.hours !== DEFAULT_CONFIG.units.hours) set('hours', String(config.units.hours));
   if (config.units.minutes !== DEFAULT_CONFIG.units.minutes) {
@@ -61,6 +64,9 @@ export function serializeConfig(config: WidgetConfig): string {
     set('seconds', String(config.units.seconds));
   }
 
+  if (config.labels.months !== DEFAULT_CONFIG.labels.months) {
+    set('labelMonths', config.labels.months);
+  }
   if (config.labels.days !== DEFAULT_CONFIG.labels.days) set('labelDays', config.labels.days);
   if (config.labels.hours !== DEFAULT_CONFIG.labels.hours) set('labelHours', config.labels.hours);
   if (config.labels.minutes !== DEFAULT_CONFIG.labels.minutes) {

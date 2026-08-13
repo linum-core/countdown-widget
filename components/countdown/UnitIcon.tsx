@@ -4,9 +4,16 @@ import type { UnitKey } from '@/types/widget';
  * Ícones desenhados à mão em SVG inline.
  *
  * Uma biblioteca de ícones acrescentaria dezenas de kilobytes ao bundle para
- * quatro glifos — o oposto do orçamento de performance deste widget.
+ * cinco glifos — o oposto do orçamento de performance deste widget.
  */
 const PATHS: Record<UnitKey, React.ReactNode> = {
+  /* Mesma folhinha do dia, com a grade do mês inteiro em vez de um só vinco. */
+  months: (
+    <>
+      <rect x="3" y="4.5" width="18" height="16" rx="3" />
+      <path d="M3 9.5h18M8 2.5v4M16 2.5v4M8 13h2M14 13h2M8 16.5h2M14 16.5h2" />
+    </>
+  ),
   days: (
     <>
       <rect x="3" y="4.5" width="18" height="16" rx="3" />
