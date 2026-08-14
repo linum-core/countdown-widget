@@ -21,6 +21,19 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  /*
+   * A raiz lê `searchParams` — é o link de edição — e por isso é rota
+   * dinâmica. Em rota dinâmica o Next transmite a metadata depois do shell, e
+   * as tags acabam dentro do `<body>`: o Google as encontra, porque executa
+   * JavaScript, mas só na segunda passada, e todo auditor de SEO relata
+   * "sem meta description".
+   *
+   * `htmlLimitedBots` é a lista de agentes que recebem a metadata bloqueante,
+   * no `<head>`. Casar com qualquer agente desliga o streaming para todo mundo.
+   * O custo é nulo aqui: a metadata deste site é um objeto constante, sem
+   * `await` nenhum, então não há espera a bloquear.
+   */
+  htmlLimitedBots: /.*/,
   async headers() {
     return [
       {

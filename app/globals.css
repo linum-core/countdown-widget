@@ -8,7 +8,12 @@
   --color-paper-deep: #f2eee8;
   --color-ink: #16130f;
   --color-ink-soft: #5c554c;
-  --color-ink-faint: #9a938a;
+  /*
+   * Passa o AA nos três fundos em que este tom aparece: 5.39:1 sobre `paper`,
+   * 4.95:1 sobre `paper-deep` e 4.76:1 sobre a caixa de código, que é `paper`
+   * escurecido em 6% de `ink` — o mais apertado dos três.
+   */
+  --color-ink-faint: #6e655a;
   --color-rule: #e2dbd1;
   --color-accent: #c2410c;
 }
@@ -154,9 +159,19 @@ body {
   background-color: var(--cd-number);
 }
 
-/* Caixa usada pelos layouts `cards` e `circular`. */
+/*
+ * Caixa usada pelos layouts `cards` e `circular`.
+ *
+ * Como no trilho do progresso, a tinta nasce de `currentColor` e não de
+ * `--cd-surface`: aquela sobreposição pressupõe saber se o fundo é claro ou
+ * escuro, e num embed transparente quem pinta atrás é o host — com `theme=dark`
+ * a caixa saía branca a 5% e sumia sobre um Notion claro. Derivar do texto
+ * garante que, se o número aparece, a caixa dele também.
+ * A primeira declaração é o fallback para navegador sem `color-mix`.
+ */
 .cd-surface {
   background-color: rgb(var(--cd-surface) / 0.05);
+  background-color: color-mix(in srgb, currentColor 7%, transparent);
   border-radius: var(--cd-radius);
 }
 
@@ -166,7 +181,9 @@ body {
  */
 .cd-glass {
   background-color: rgb(var(--cd-surface) / 0.08);
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
   border: 1px solid rgb(var(--cd-surface) / 0.14);
+  border-color: color-mix(in srgb, currentColor 18%, transparent);
   backdrop-filter: blur(10px) saturate(140%);
   -webkit-backdrop-filter: blur(10px) saturate(140%);
 }

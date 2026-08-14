@@ -15,7 +15,11 @@ const PARAMETERS: readonly ParameterRow[] = [
     values: 'minimal · horizontal · cards · circular',
     description: 'Forma do widget.',
   },
-  { name: 'theme', values: 'light · dark · auto', description: 'Auto segue o sistema.' },
+  {
+    name: 'theme',
+    values: 'light · dark · auto · neutral',
+    description: 'Auto segue o sistema; neutral lê no claro e no escuro.',
+  },
   { name: 'size', values: 'small · medium · large', description: 'Escala tipográfica.' },
   {
     name: 'font',
@@ -36,12 +40,12 @@ const PARAMETERS: readonly ParameterRow[] = [
   { name: 'background', values: 'transparent · 111111', description: 'Transparente por padrão.' },
   { name: 'radius', values: '0 a 48', description: 'Raio dos cantos, em px.' },
   {
-    name: 'days · hours · minutes · seconds',
+    name: 'months · days · hours · minutes · seconds',
     values: 'true · false',
-    description: 'Liga cada unidade.',
+    description: 'Liga cada unidade. Meses vem desligado.',
   },
   {
-    name: 'labelDays · labelHours · labelMinutes · labelSeconds',
+    name: 'labelMonths · labelDays · labelHours · labelMinutes · labelSeconds',
     values: 'texto',
     description: 'Rótulo de cada unidade.',
   },

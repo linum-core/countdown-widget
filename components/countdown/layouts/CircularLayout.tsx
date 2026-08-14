@@ -9,6 +9,8 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 /** Escala natural de cada unidade, usada para desenhar a fração do anel. */
 const UNIT_MAX: Record<UnitKey, number> = {
+  months: 12,
+  // Com meses ligados, o dia nunca passa de 31; o anel de 365 é para quando não.
   days: 365,
   hours: 24,
   minutes: 60,

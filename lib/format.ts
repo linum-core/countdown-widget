@@ -8,6 +8,8 @@ export function activeUnits(units: UnitFlags): UnitKey[] {
 
 /** Abreviação usada pelo layout horizontal (`458d : 12h : 35m : 41s`). */
 export const UNIT_SUFFIX: Record<UnitKey, string> = {
+  // `mo` para não colidir com o `m` de minutos na mesma linha.
+  months: 'mo',
   days: 'd',
   hours: 'h',
   minutes: 'm',

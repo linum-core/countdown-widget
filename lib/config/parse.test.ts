@@ -55,6 +55,7 @@ describe('parseConfig', () => {
     expect(parse('layout=espiral').layout).toBe(DEFAULT_CONFIG.layout);
 
     expect(parse('theme=dark').theme).toBe('dark');
+    expect(parse('theme=neutral').theme).toBe('neutral');
     expect(parse('size=large').size).toBe('large');
     expect(parse('font=poppins').font).toBe('poppins');
     expect(parse('font=playfair').font).toBe('playfair');

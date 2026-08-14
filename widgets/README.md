@@ -28,11 +28,11 @@ Precisa do **[Scriptable](https://apps.apple.com/app/scriptable/id1405459188)** 
 
 Tamanhos suportados:
 
-| Tamanho | O que mostra |
-| --- | --- |
-| Pequeno | 💍, número de dias, rótulo |
-| Médio | Título, dias, e `Xh Ymin` |
-| Grande | Idem, com fonte maior e o local |
+| Tamanho                                         | O que mostra                     |
+| ----------------------------------------------- | -------------------------------- |
+| Pequeno                                         | 💍, número de dias, rótulo       |
+| Médio                                           | Título, dias, e `Xh Ymin`        |
+| Grande                                          | Idem, com fonte maior e o local  |
 | Tela de bloqueio (retangular, circular, inline) | Versão monocromática, só os dias |
 
 Para mudar data, título ou cores, edite o bloco `Configuração` no topo do arquivo — nada abaixo dele precisa ser tocado.
@@ -54,12 +54,12 @@ Não existe equivalente do Scriptable no Android (nenhum app roda JS e devolve u
 
 5. Repita o passo 4 para os outros textos que quiser:
 
-   | Fórmula | Resultado |
-   | --- | --- |
-   | `$tf(2027y07M18d15h00m00s, D)$ dias` | `340 dias` |
+   | Fórmula                                | Resultado          |
+   | -------------------------------------- | ------------------ |
+   | `$tf(2027y07M18d15h00m00s, D)$ dias`   | `340 dias`         |
    | `$tf(2027y07M18d15h00m00s, hh:mm:ss)$` | relógio até a hora |
-   | `$tf(2027y07M18d15h00m00s, M)$` | total de minutos |
-   | `💍 Casamento Marcela e Gabriel` | título, texto puro |
+   | `$tf(2027y07M18d15h00m00s, M)$`        | total de minutos   |
+   | `💍 Casamento Marcela e Gabriel`       | título, texto puro |
 
    `D` conta **dias cheios**: às 23h da véspera ele mostra `0`, não `1`. É a mesma regra do site.
 
@@ -70,7 +70,7 @@ Não existe equivalente do Scriptable no Android (nenhum app roda JS e devolve u
 
 ### Alternativa sem KWGT
 
-Se não quiser montar layout, qualquer app de contagem regressiva da Play Store com widget resolve o básico (ex.: *Countdown Widget*, *Event Countdown*). Basta cadastrar `18/07/2027 15:00`. Perde-se o controle de tipografia e cor, e nenhum deles abre o Notion no toque.
+Se não quiser montar layout, qualquer app de contagem regressiva da Play Store com widget resolve o básico (ex.: _Countdown Widget_, _Event Countdown_). Basta cadastrar `18/07/2027 15:00`. Perde-se o controle de tipografia e cor, e nenhum deles abre o Notion no toque.
 
 ---
 

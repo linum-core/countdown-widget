@@ -9,7 +9,7 @@ import {
   padValue,
 } from './diff';
 
-const ALL = { days: true, hours: true, minutes: true, seconds: true };
+const ALL = { months: false, days: true, hours: true, minutes: true, seconds: true };
 
 describe('computeTimeParts', () => {
   it('quebra o intervalo em dias, horas, minutos e segundos', () => {
@@ -60,9 +60,9 @@ describe('computeTimeParts', () => {
   it('acumula tudo em minutos quando só minutos está ativo', () => {
     const target = MS_DAY + 30 * MS_MINUTE;
     const parts = computeTimeParts(target, 0, {
+      ...ALL,
       days: false,
       hours: false,
-      minutes: true,
       seconds: false,
     });
 
@@ -71,6 +71,7 @@ describe('computeTimeParts', () => {
 
   it('retorna zeros quando nenhuma unidade está ativa', () => {
     const parts = computeTimeParts(MS_DAY, 0, {
+      months: false,
       days: false,
       hours: false,
       minutes: false,
@@ -83,6 +84,73 @@ describe('computeTimeParts', () => {
 
   it('usa todas as unidades quando o flag não é informado', () => {
     expect(computeTimeParts(MS_DAY, 0).days).toBe(1);
+  });
+
+  it('deixa meses zerado enquanto a unidade está desligada', () => {
+    const parts = computeTimeParts(
+      Date.parse('2027-07-18T15:00:00Z'),
+      Date.parse('2026-08-13T15:00:00Z'),
+      ALL,
+    );
+
+    expect(parts.months).toBe(0);
+    expect(parts.days).toBe(339);
+  });
+
+  it('conta meses pelo calendário, não por média de 30 dias', () => {
+    const now = Date.parse('2026-08-13T15:00:00Z');
+    const target = Date.parse('2027-07-18T15:00:00Z');
+    const parts = computeTimeParts(target, now, { ...ALL, months: true }, 'UTC');
+
+    // 13/08/2026 -> 13/07/2027 são 11 meses cheios; sobram 5 dias até o dia 18.
+    expect(parts.months).toBe(11);
+    expect(parts.days).toBe(5);
+    expect(parts.hours).toBe(0);
+  });
+
+  it('respeita o tamanho real de cada mês', () => {
+    const units = { ...ALL, months: true };
+
+    // Fevereiro tem 28 dias em 2027: de 01/02 a 01/03 fecha um mês.
+    const curto = computeTimeParts(
+      Date.parse('2027-03-01T00:00:00Z'),
+      Date.parse('2027-02-01T00:00:00Z'),
+      units,
+      'UTC',
+    );
+    expect(curto).toMatchObject({ months: 1, days: 0 });
+
+    // Já de 01/03 a 01/04 são 31 dias, e continua sendo um mês.
+    const longo = computeTimeParts(
+      Date.parse('2027-04-01T00:00:00Z'),
+      Date.parse('2027-03-01T00:00:00Z'),
+      units,
+      'UTC',
+    );
+    expect(longo).toMatchObject({ months: 1, days: 0 });
+  });
+
+  it('grampeia o dia ao fim do mês mais curto', () => {
+    // 31/01 + 1 mês é 28/02, então de 31/01 a 28/02 fecha um mês exato.
+    const parts = computeTimeParts(
+      Date.parse('2027-02-28T00:00:00Z'),
+      Date.parse('2027-01-31T00:00:00Z'),
+      { ...ALL, months: true },
+      'UTC',
+    );
+
+    expect(parts).toMatchObject({ months: 1, days: 0 });
+  });
+
+  it('não conta mês nenhum quando falta menos de um', () => {
+    const parts = computeTimeParts(
+      Date.parse('2027-03-30T00:00:00Z'),
+      Date.parse('2027-03-01T00:00:00Z'),
+      { ...ALL, months: true },
+      'UTC',
+    );
+
+    expect(parts).toMatchObject({ months: 0, days: 29 });
   });
 });
 

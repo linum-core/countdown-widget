@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { isDualToneSafe } from '@/lib/color';
 import { DEFAULT_CONFIG } from '@/lib/config/schema';
 import { MS_DAY, MS_HOUR, MS_MINUTE, MS_SECOND } from '@/lib/time/diff';
 import type { WidgetConfig } from '@/types/widget';
@@ -79,15 +80,30 @@ describe('Countdown', () => {
   it('respeita as unidades desativadas e redistribui o tempo', () => {
     renderWidget({
       targetMs: NOW + 2 * MS_DAY + 3 * MS_HOUR,
-      units: { days: false, hours: true, minutes: true, seconds: true },
+      units: { months: false, days: false, hours: true, minutes: true, seconds: true },
     });
 
     expect(screen.getByText('51')).toBeInTheDocument();
     expect(screen.queryByText('Dias')).not.toBeInTheDocument();
   });
 
+  it('mostra meses de calendário quando a unidade está ligada', () => {
+    renderWidget({
+      // 01/01/2026 -> 18/07/2027: 18 meses cheios e 17 dias.
+      targetMs: Date.parse('2027-07-18T00:00:00.000Z'),
+      timezone: 'UTC',
+      units: { months: true, days: true, hours: true, minutes: true, seconds: true },
+    });
+
+    expect(screen.getByText('Meses')).toBeInTheDocument();
+    expect(screen.getByText('18')).toBeInTheDocument();
+    expect(screen.getByText('17')).toBeInTheDocument();
+  });
+
   it('usa os rótulos vindos da configuração', () => {
-    renderWidget({ labels: { days: 'Days', hours: 'Hrs', minutes: 'Min', seconds: 'Sec' } });
+    renderWidget({
+      labels: { months: 'Mos', days: 'Days', hours: 'Hrs', minutes: 'Min', seconds: 'Sec' },
+    });
 
     expect(screen.getByText('Days')).toBeInTheDocument();
     expect(screen.getByText('Hrs')).toBeInTheDocument();
@@ -171,5 +187,15 @@ describe('Countdown', () => {
   it('marca o tema escolhido no elemento raiz', () => {
     const { container } = renderWidget({ theme: 'dark' });
     expect(container.querySelector('.cd-root')).toHaveAttribute('data-theme', 'dark');
+  });
+
+  it('pinta o tema neutro com tons que leem no claro e no escuro', () => {
+    const { container } = renderWidget({ theme: 'neutral' });
+    const root = container.querySelector('.cd-root') as HTMLElement;
+
+    expect(root).toHaveAttribute('data-theme', 'neutral');
+    // Inline, e não pela media query: o neutro não depende do sistema de ninguém.
+    expect(isDualToneSafe(root.style.getPropertyValue('--cd-fg'))).toBe(true);
+    expect(isDualToneSafe(root.style.getPropertyValue('--cd-muted'))).toBe(true);
   });
 });

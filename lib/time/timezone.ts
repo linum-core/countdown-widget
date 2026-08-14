@@ -1,10 +1,14 @@
-import { MS_MINUTE } from './diff';
-
 /**
  * Resolução de datas em timezone IANA sem nenhuma dependência externa.
  * Toda a aritmética se apoia em `Intl.DateTimeFormat`, disponível nativamente
  * em Node e em todos os navegadores modernos.
  */
+
+/*
+ * Declarado aqui, e não importado de `./diff`: é `diff` quem depende deste
+ * módulo, para contar meses de calendário. Importar de volta fecharia um ciclo.
+ */
+const MS_MINUTE = 60_000;
 
 /** Aceita `2027-05-15T16:00:00`, `2027-05-15 16:00`, `2027-05-15` e variações com segundos. */
 const NAIVE_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?)?$/;
@@ -114,6 +118,73 @@ export function formatNaiveInTimeZone(utcMs: number, timezone: string): string {
 
   const hour = String(Number(read('hour')) % 24).padStart(2, '0');
   return `${read('year')}-${read('month')}-${read('day')}T${hour}:${read('minute')}:${read('second')}`;
+}
+
+/**
+ * Soma meses de calendário a um instante, preservando a hora local.
+ *
+ * Mês não tem duração fixa, então isto não pode ser aritmética de milissegundos:
+ * de 31 de janeiro a 28 de fevereiro passa "um mês", e de 1º de março a 1º de
+ * abril também, com sete dias de diferença entre os dois. O dia é grampeado ao
+ * último do mês de destino, pela mesma razão — 31 de janeiro mais um mês é o
+ * fim de fevereiro, não 3 de março, que é o que `Date` faria sozinho.
+ *
+ * `timezone` nula cai na timezone do ambiente, mesma regra de `parseTargetDate`.
+ */
+export function addMonths(utcMs: number, months: number, timezone: string | null): number {
+  const shift = (year: number, month: number, day: number) => {
+    const total = year * 12 + (month - 1) + months;
+    const shiftedYear = Math.floor(total / 12);
+    const shiftedMonth = (((total % 12) + 12) % 12) + 1;
+    return {
+      year: shiftedYear,
+      month: shiftedMonth,
+      day: Math.min(day, daysInMonth(shiftedYear, shiftedMonth)),
+    };
+  };
+
+  if (timezone && isValidTimezone(timezone)) {
+    const [date, time] = formatNaiveInTimeZone(utcMs, timezone).split('T');
+    const [year, month, day] = date!.split('-').map(Number);
+    const [hour, minute, second] = time!.split(':').map(Number);
+
+    return zonedTimeToUtc(
+      { ...shift(year!, month!, day!), hour: hour!, minute: minute!, second: second! },
+      timezone,
+    );
+  }
+
+  const local = new Date(utcMs);
+  const shifted = shift(local.getFullYear(), local.getMonth() + 1, local.getDate());
+
+  return new Date(
+    shifted.year,
+    shifted.month - 1,
+    shifted.day,
+    local.getHours(),
+    local.getMinutes(),
+    local.getSeconds(),
+    local.getMilliseconds(),
+  ).getTime();
+}
+
+/**
+ * Quantidade de meses de calendário cheios entre dois instantes.
+ *
+ * O palpite inicial usa a duração média do mês gregoriano e é corrigido por
+ * passos de um mês, o que resolve em uma ou duas iterações em vez de percorrer
+ * o intervalo inteiro.
+ */
+export function wholeMonthsBetween(fromMs: number, toMs: number, timezone: string | null): number {
+  if (toMs <= fromMs) return 0;
+
+  const AVERAGE_MONTH_MS = 30.436875 * 24 * 60 * 60 * 1000;
+  let months = Math.max(0, Math.floor((toMs - fromMs) / AVERAGE_MONTH_MS));
+
+  while (addMonths(fromMs, months + 1, timezone) <= toMs) months += 1;
+  while (months > 0 && addMonths(fromMs, months, timezone) > toMs) months -= 1;
+
+  return months;
 }
 
 /**

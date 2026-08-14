@@ -90,7 +90,7 @@ describe('useCountdown', () => {
     const { result } = renderHook(() =>
       useCountdown({
         targetMs: START + 26 * MS_HOUR,
-        units: { days: false, hours: true, minutes: true, seconds: true },
+        units: { months: false, days: false, hours: true, minutes: true, seconds: true },
       }),
     );
 

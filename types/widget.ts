@@ -7,21 +7,20 @@
  */
 
 export type Layout = 'minimal' | 'horizontal' | 'cards' | 'circular';
-export type Theme = 'light' | 'dark' | 'auto';
+/**
+ * `neutral` não é um meio-termo estético: é a paleta cuja luminância cai na
+ * faixa em que o texto lê tanto sobre branco quanto sobre preto. Existe para o
+ * embed de fundo transparente, onde a cor atrás do widget é do host.
+ */
+export type Theme = 'light' | 'dark' | 'auto' | 'neutral';
 export type Size = 'small' | 'medium' | 'large';
 export type FontKey =
-  | 'inter'
-  | 'poppins'
-  | 'manrope'
-  | 'geist'
-  | 'playfair'
-  | 'greatvibes'
-  | 'system';
+  'inter' | 'poppins' | 'manrope' | 'geist' | 'playfair' | 'greatvibes' | 'system';
 export type Skin = 'flat' | 'glass' | 'neon';
 export type Animation = 'fade' | 'slide' | 'flip' | 'none';
 
 /** Chave de cada unidade de tempo, na ordem em que é exibida. */
-export type UnitKey = 'days' | 'hours' | 'minutes' | 'seconds';
+export type UnitKey = 'months' | 'days' | 'hours' | 'minutes' | 'seconds';
 
 export type UnitFlags = Record<UnitKey, boolean>;
 export type UnitLabels = Record<UnitKey, string>;
@@ -70,6 +69,8 @@ export interface WidgetConfig {
 
 /** Resultado do cálculo de tempo restante. */
 export interface TimeParts {
+  /** Meses de calendário cheios. Zero quando a unidade está desativada. */
+  months: number;
   days: number;
   hours: number;
   minutes: number;

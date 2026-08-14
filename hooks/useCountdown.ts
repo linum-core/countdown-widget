@@ -4,12 +4,20 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { MS_SECOND, computeTimeParts } from '@/lib/time/diff';
 import type { TimeParts, UnitFlags } from '@/types/widget';
 
-const ALL_UNITS: UnitFlags = { days: true, hours: true, minutes: true, seconds: true };
+const ALL_UNITS: UnitFlags = {
+  months: false,
+  days: true,
+  hours: true,
+  minutes: true,
+  seconds: true,
+};
 
 interface UseCountdownOptions {
   /** Instante alvo em epoch ms. `null` congela o contador em zero. */
   targetMs: number | null;
   units?: UnitFlags;
+  /** Timezone IANA usada para contar meses de calendário. `null` = a do ambiente. */
+  timezone?: string | null;
   /** Injeção de relógio para testes; default `Date.now`. */
   now?: () => number;
 }
@@ -29,7 +37,12 @@ interface UseCountdownOptions {
  *    segundo plano. Navegadores estrangulam timers em abas ocultas; sem isso o
  *    widget apareceria congelado ao reabrir a página do Notion.
  */
-export function useCountdown({ targetMs, units = ALL_UNITS, now }: UseCountdownOptions): TimeParts {
+export function useCountdown({
+  targetMs,
+  units = ALL_UNITS,
+  timezone = null,
+  now,
+}: UseCountdownOptions): TimeParts {
   // Mantido em ref para não recriar o efeito quando o chamador passa um inline.
   const nowRef = useRef(now ?? Date.now);
   nowRef.current = now ?? Date.now;
@@ -37,11 +50,14 @@ export function useCountdown({ targetMs, units = ALL_UNITS, now }: UseCountdownO
   const unitsRef = useRef(units);
   unitsRef.current = units;
 
+  const timezoneRef = useRef(timezone);
+  timezoneRef.current = timezone;
+
   const read = useCallback((): TimeParts => {
     if (targetMs == null) {
-      return { days: 0, hours: 0, minutes: 0, seconds: 0, remainingMs: 0, ended: false };
+      return { months: 0, days: 0, hours: 0, minutes: 0, seconds: 0, remainingMs: 0, ended: false };
     }
-    return computeTimeParts(targetMs, nowRef.current(), unitsRef.current);
+    return computeTimeParts(targetMs, nowRef.current(), unitsRef.current, timezoneRef.current);
   }, [targetMs]);
 
   // O primeiro valor também é calculado no servidor, o que evita um frame vazio

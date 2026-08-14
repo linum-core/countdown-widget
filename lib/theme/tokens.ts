@@ -41,10 +41,17 @@ const SIZE_SCALE: Record<Size, { value: string; label: string; title: string; ga
  * `surface` são canais RGB de uma *sobreposição* (`rgb(var(--cd-surface) / 0.05)`),
  * não uma cor de fundo: no tema claro a caixa escurece o que está atrás, no
  * escuro ela clareia. Por isso os valores são invertidos em relação ao `fg`.
+ *
+ * `neutral` serve o caso em que não dá para saber o fundo: dentro de um iframe
+ * de outra origem o widget é transparente e quem pinta atrás é o host, que pode
+ * estar claro num aparelho e escuro noutro. Os tons vêm da faixa de luminância
+ * relativa ~0.20, onde o contraste contra branco e contra preto se iguala em
+ * torno de 4.2:1 — o melhor que uma cor só consegue servindo os dois lados.
  */
 const PALETTE = {
   light: { fg: '#111111', muted: '#6b6b6b', surface: '0 0 0' },
   dark: { fg: '#f5f5f5', muted: '#a1a1a1', surface: '255 255 255' },
+  neutral: { fg: '#7a7a7a', muted: '#858585', surface: '128 128 128' },
 } as const;
 
 /** Variáveis próprias do widget; o prefixo evita colisão com qualquer host. */
