@@ -247,7 +247,7 @@ Sem `NEXT_PUBLIC_SITE_URL`, a Vercel preenche a origem automaticamente e o desen
 
 ## Anúncios
 
-A homepage exibe Google AdSense; o widget em `/w` nunca exibe. Sem `NEXT_PUBLIC_ADSENSE_CLIENT` o site roda como antes — nenhum script externo, nenhum banner de cookies.
+A homepage exibe Google AdSense; o widget em `/w` nunca exibe. Sem `NEXT_PUBLIC_ADSENSE_CLIENT` o site roda como antes — nenhum script externo, nenhuma mensagem de cookies. O consentimento, onde é exigido, fica a cargo da CMP do Google.
 
 Configuração, política de consentimento e passo a passo de aprovação em **[docs/ADS.md](docs/ADS.md)**. A página pública é [`/privacidade`](app/privacidade/page.tsx).
 

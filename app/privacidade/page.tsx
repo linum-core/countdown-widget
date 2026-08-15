@@ -39,9 +39,10 @@ const SECTIONS: Section[] = [
     body: (
       <>
         A homepage exibe anúncios do Google AdSense. O Google e seus parceiros podem usar cookies
-        para medir e personalizar o que é exibido. Se você escolher “Só o essencial”, os anúncios
-        continuam aparecendo, porém não&#8209;personalizados — sem cookies de perfil. Nenhum script
-        de anúncio é baixado antes da sua escolha.
+        para medir e personalizar o que é exibido. No Espaço Econômico Europeu, no Reino Unido e na
+        Suíça, o consentimento é pedido pela mensagem do próprio Google (uma CMP certificada), com
+        as opções “Consentir”, “Não consentir” e “Gerenciar opções”; recusar não apaga os anúncios,
+        que passam a ser não&#8209;personalizados.
       </>
     ),
   },
@@ -49,11 +50,9 @@ const SECTIONS: Section[] = [
     title: 'O que fica guardado no seu navegador',
     body: (
       <>
-        Apenas a sua decisão sobre cookies, num item de{' '}
-        <code className="bg-ink/[0.06] rounded px-1 py-0.5 font-mono text-xs">localStorage</code>{' '}
-        chamado{' '}
-        <code className="bg-ink/[0.06] rounded px-1 py-0.5 font-mono text-xs">cw-consent</code>. Ele
-        não identifica você e nunca sai do dispositivo.
+        Este site não guarda nada: a configuração da contagem viaja na URL e nenhum dado é enviado a
+        um servidor nosso. A decisão sobre cookies, quando a mensagem de consentimento se aplica, é
+        registrada pela CMP do Google no seu navegador — e pode ser revista abaixo.
       </>
     ),
   },
@@ -81,8 +80,9 @@ export default function PrivacidadePage() {
           <section className="border-rule border-t pt-6">
             <h2 className="text-xl font-semibold tracking-tight">Mudar de ideia</h2>
             <p className="text-ink-soft mt-3 text-base leading-relaxed">
-              O botão abaixo apaga a escolha guardada e leva você de volta à homepage, com o aviso
-              aberto de novo. Para detalhes de como o Google trata os dados, veja a{' '}
+              Onde a mensagem de consentimento do Google se aplica, o botão abaixo a reabre para
+              você trocar a decisão. Fora dessas regiões não há escolha registrada, e o botão não
+              aparece. Para detalhes de como o Google trata os dados, veja a{' '}
               <a
                 href="https://policies.google.com/technologies/partner-sites"
                 className="text-ink underline underline-offset-4"

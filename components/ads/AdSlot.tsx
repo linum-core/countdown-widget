@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { getAdsenseClient } from '@/lib/ads';
-import { useConsent } from './consent';
 
 interface AdSlotProps {
   /** ID da unidade criada no painel do AdSense. Ausente = slot não renderiza. */
@@ -21,15 +20,16 @@ interface AdSlotProps {
  * Uma unidade do AdSense.
  *
  * Some por completo — sem espaço reservado, sem borda — quando falta o ID do
- * publisher, falta o ID do slot, ou o visitante ainda não decidiu sobre
- * cookies. Nesses casos o script sequer foi baixado e um `<ins>` órfão nunca
- * seria preenchido.
+ * publisher ou o ID do slot. Nesses casos o script sequer foi baixado e um
+ * `<ins>` órfão nunca seria preenchido.
+ *
+ * Consentimento não entra na conta: quem decide se o anúncio sai personalizado,
+ * despersonalizado ou não sai é a CMP do Google, dentro do próprio AdSense.
  */
 export function AdSlot({ slot, format, responsive, className, style, label }: AdSlotProps) {
   const client = getAdsenseClient();
-  const { state } = useConsent();
   const pushed = useRef(false);
-  const enabled = Boolean(client && slot) && state !== 'unknown';
+  const enabled = Boolean(client && slot);
 
   useEffect(() => {
     if (!enabled || pushed.current) return;

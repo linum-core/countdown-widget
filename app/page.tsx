@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { AdRails } from '@/components/ads/AdRails';
 import { AdSenseScript } from '@/components/ads/AdSenseScript';
 import { AdSlot } from '@/components/ads/AdSlot';
-import { ConsentBanner } from '@/components/ads/ConsentBanner';
-import { ConsentProvider } from '@/components/ads/consent';
 import { ExampleGallery } from '@/components/home/ExampleGallery';
 import { Faq } from '@/components/home/Faq';
 import { GeneratorSection } from '@/components/home/GeneratorSection';
@@ -20,11 +18,9 @@ interface HomePageProps {
 }
 
 /*
-  A verificação do AdSense precisa achar o publisher sem depender do banner de
-  cookies: o rastreador do Google nunca aceita nada, então `adsbygoogle.js` — que
-  só carrega depois de uma decisão de consentimento — não serve como prova de
-  propriedade. A meta `google-adsense-account` é o método oficial para isso e não
-  baixa script nenhum.
+  A verificação do AdSense é feita pela meta `google-adsense-account`, o método
+  oficial: ela não baixa script nenhum e não depende de o `adsbygoogle.js` ter
+  carregado quando o rastreador passa.
 
   Fica na homepage, e não em `app/layout.tsx`, pela mesma razão que os anúncios:
   o layout é compartilhado com o widget em `/w`.
@@ -49,7 +45,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
     anúncio quebraria o embed e violaria a política do AdSense.
   */
   return (
-    <ConsentProvider>
+    <>
       <AdSenseScript />
       <AdRails />
       <main className="bg-paper text-ink min-h-dvh">
@@ -161,7 +157,6 @@ export default function HomePage({ searchParams }: HomePageProps) {
           </footer>
         </div>
       </main>
-      <ConsentBanner />
-    </ConsentProvider>
+    </>
   );
 }

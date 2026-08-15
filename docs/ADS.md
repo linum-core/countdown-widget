@@ -24,23 +24,25 @@ Se um dia aparecer a tentação de mover o script para o layout raiz "para simpl
 
 ## Consentimento
 
-Banner próprio em pt-BR, com [Google Consent Mode v2](https://developers.google.com/tag-platform/security/guides/consent). Os defaults (`ad_storage`, `ad_user_data`, `ad_personalization`, `analytics_storage`) são enfileirados como `denied` antes de qualquer coisa.
+Quem pede o consentimento é a **CMP do Google** ("Privacidade e mensagens" no painel do AdSense), configurada com as três opções: _Consentir_, _Não consentir_ e _Gerenciar opções_. É uma CMP certificada pelo Google, que emite os sinais do [Consent Mode v2](https://developers.google.com/tag-platform/security/guides/consent) e do TCF sozinha.
 
-| Estado                      | Script AdSense | Anúncios                        |
-| --------------------------- | -------------- | ------------------------------- |
-| Sem decisão (banner aberto) | não carrega    | nenhum                          |
-| Aceitou                     | carrega        | personalizados                  |
-| Recusou                     | carrega        | não-personalizados (sem perfil) |
+O site não tem banner próprio, e isso é deliberado:
 
-Recusar **não** apaga os anúncios: o `requestNonPersonalizedAds = 1` é definido antes do script e o AdSense passa a servir sem cookies de perfil. Só o estado indeciso bloqueia o download.
+- A CMP do Google **é entregue pelo `adsbygoogle.js`**. Um banner nosso que segurasse o script até haver decisão impediria a mensagem do Google de aparecer — justamente no EEE, no Reino Unido e na Suíça, onde ela é obrigatória.
+- Um banner próprio, não certificado, não substitui a exigência do TCF; teríamos dois avisos empilhados: o nosso em todo lugar, o do Google por cima na Europa.
 
-A decisão fica em `localStorage`, na chave `cw-consent`. É o único dado que o site guarda no navegador. `/privacidade` traz um botão que apaga a chave e recarrega, reabrindo o banner.
+| Região                          | Mensagem      | Anúncios                                          |
+| ------------------------------- | ------------- | ------------------------------------------------- |
+| EEE, Reino Unido e Suíça        | CMP do Google | conforme a escolha (recusar = não-personalizados) |
+| Demais regiões (Brasil incluso) | nenhuma       | personalizados                                    |
 
-Os sinais de consentimento são emitidos no corpo do componente `AdSenseScript`, não num `useEffect` — efeitos rodam depois que o React insere o DOM, e o `<script>` já teria começado a baixar.
+A escolha é guardada pela própria CMP. `/privacidade` traz um botão que a reabre via `googlefc.showRevocationMessage()`; onde a mensagem não se aplica, `googlefc` não existe e o botão não é renderizado.
+
+O `adsbygoogle.js` carrega sem gate — ver `components/ads/AdSenseScript.tsx`. Sem `NEXT_PUBLIC_ADSENSE_CLIENT` nada disso acontece.
 
 ## Variáveis de ambiente
 
-Todas opcionais. Sem `NEXT_PUBLIC_ADSENSE_CLIENT` o site roda como antes: nenhuma requisição externa, nenhum banner, e `/ads.txt` responde 404.
+Todas opcionais. Sem `NEXT_PUBLIC_ADSENSE_CLIENT` o site roda como antes: nenhuma requisição externa, nenhuma mensagem de consentimento, e `/ads.txt` responde 404.
 
 | Variável                              | Formato        | Onde achar no painel do AdSense             |
 | ------------------------------------- | -------------- | ------------------------------------------- |
@@ -90,14 +92,15 @@ NEXT_PUBLIC_ADSENSE_SLOT_FOOTER=0000000000 pnpm dev
 
 O que verificar com o DevTools aberto:
 
-- **Antes de decidir**, nenhuma requisição a `googlesyndication.com`.
-- **Depois de aceitar**, o `adsbygoogle.js` aparece no Network. Os blocos ficam vazios com um ID falso — o esperado.
+- **Sem a variável**, nenhuma requisição a `googlesyndication.com`.
+- **Com ela**, o `adsbygoogle.js` aparece no Network. Os blocos ficam vazios com um ID falso — o esperado.
+- **A mensagem de consentimento** só aparece com IP do EEE, do Reino Unido ou da Suíça; do Brasil ela não sai, e isso não é bug. Para testá-la, use a prévia dentro do painel do AdSense (Privacidade e mensagens).
 - **Em `/w`**, com o ID definido: zero requisições ao Google e nenhum `<ins>` no DOM. É a garantia de isolamento que mais importa.
 - **Larguras**: os trilhos aparecem em 1920px e somem em 1440px.
 
 Um bloqueador de anúncios não quebra nada: o `push` na fila está dentro de um `try`.
 
-Os testes automatizados cobrem a validação do ID, as condições de renderização do slot e o ciclo do banner:
+Os testes automatizados cobrem a validação do ID e as condições de renderização do slot:
 
 ```bash
 pnpm test lib/ads.test.ts components/ads
@@ -108,15 +111,13 @@ pnpm test lib/ads.test.ts components/ads
 ```
 lib/ads.ts                        ID do publisher + IDs dos slots
 components/ads/
-  consent.tsx                     ConsentProvider e useConsent
-  ConsentBanner.tsx               a barra de escolha
-  ConsentReset.tsx                botão de refazer a escolha (/privacidade)
-  AdSenseScript.tsx               Consent Mode v2 + carga do adsbygoogle.js
+  ConsentReset.tsx                reabre a CMP do Google (/privacidade)
+  AdSenseScript.tsx               carga do adsbygoogle.js
   AdSlot.tsx                      um <ins>, com todas as guardas
   AdRails.tsx                     os dois trilhos laterais
 app/ads.txt/route.ts              ads.txt gerado da env var
 app/privacidade/page.tsx          página exigida pelas políticas do AdSense
-types/ads.d.ts                    globais de window.adsbygoogle e dataLayer
+types/ads.d.ts                    globais de window.adsbygoogle e window.googlefc
 ```
 
 Não foram tocados, de propósito: `app/layout.tsx`, `app/w/**`, `next.config.ts`, `app/robots.ts`.
