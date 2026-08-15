@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AdRails } from '@/components/ads/AdRails';
 import { AdSenseScript } from '@/components/ads/AdSenseScript';
@@ -10,13 +11,28 @@ import { Faq } from '@/components/home/Faq';
 import { GeneratorSection } from '@/components/home/GeneratorSection';
 import { ParameterTable } from '@/components/home/ParameterTable';
 import { StructuredData } from '@/components/home/StructuredData';
-import { AD_SLOTS } from '@/lib/ads';
+import { AD_SLOTS, getAdsenseClient } from '@/lib/ads';
 import type { RawSearchParams } from '@/lib/config/parse';
 import { SITE_TAGLINE, SITE_NAME, getSiteUrl } from '@/lib/site';
 
 interface HomePageProps {
   searchParams: Promise<RawSearchParams>;
 }
+
+/*
+  A verificação do AdSense precisa achar o publisher sem depender do banner de
+  cookies: o rastreador do Google nunca aceita nada, então `adsbygoogle.js` — que
+  só carrega depois de uma decisão de consentimento — não serve como prova de
+  propriedade. A meta `google-adsense-account` é o método oficial para isso e não
+  baixa script nenhum.
+
+  Fica na homepage, e não em `app/layout.tsx`, pela mesma razão que os anúncios:
+  o layout é compartilhado com o widget em `/w`.
+*/
+export const metadata: Metadata = (() => {
+  const client = getAdsenseClient();
+  return client ? { other: { 'google-adsense-account': client } } : {};
+})();
 
 /*
   `searchParams` chega como promessa e é repassada sem `await`: quem espera por

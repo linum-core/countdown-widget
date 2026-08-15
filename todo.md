@@ -1,5 +1,3 @@
-- [ ] Ajustar q o escuro no notion n ta escuro (só no notion no PC)
-
 - [ ] Colocar propaganda no site de config
   - [ ] Criar conta no Google Ads
   - [ ] Colocar API key nas envs da vercel
@@ -10,5 +8,6 @@
     - [ ] Ative a AdSense Management API para esse projeto.
     - [ ] Vá até a aba Credenciais e crie um ID do cliente OAuth 2.0 ou uma Conta de Serviço (que gerará um arquivo JSON de autenticação).
     - [ ] Utilize o token de acesso OAuth gerado para autorizar as requisições HTTP do seu aplicativo
+
 - [ ] Validar a necessidade dos testes Jest
 - [ ] Internacionalizar o site
